@@ -1,438 +1,628 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=128, height=160, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Micro Phone OS Pro</title>
-  <style>
-    :root {
-      --bg: #0d0f12;
-      --card: #161b22;
-      --border: #30363d;
-      --accent: #00ff66;
-      --text: #f0f6fc;
-      --sub: #8b949e;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: monospace, sans-serif;
-      user-select: none;
-    }
-
-    html, body {
-      width: 128px;
-      height: 160px;
-      overflow: hidden;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .app-container {
-      width: 128px;
-      height: 160px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-    }
-
-    /* Üst Durum Çubuğu */
-    .status-bar {
-      height: 14px;
-      background: #000;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 3px;
-      font-size: 8px;
-      color: var(--accent);
-    }
-
-    /* Ekran Alanı */
-    .screen {
-      flex: 1;
-      overflow-y: auto;
-      padding: 3px;
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    /* Alt Menü Tab Bar */
-    .tab-bar {
-      height: 22px;
-      background: #000;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .tab-btn {
-      background: none;
-      border: none;
-      color: var(--sub);
-      font-size: 10px;
-      cursor: pointer;
-    }
-
-    .tab-btn.active {
-      color: var(--accent);
-      font-weight: bold;
-    }
-
-    /* Genel Arayüz Elemanları */
-    .btn {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 3px;
-      margin-bottom: 3px;
-      border-radius: 2px;
-      font-size: 8px;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .btn:focus, .btn:active {
-      background: var(--accent);
-      color: #000;
-      border-color: #fff;
-    }
-
-    .title {
-      font-size: 9px;
-      font-weight: bold;
-      color: var(--accent);
-      margin-bottom: 3px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1px;
-    }
-
-    input, textarea {
-      width: 100%;
-      background: #000;
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 8px;
-      padding: 3px;
-      border-radius: 2px;
-      outline: none;
-      margin-bottom: 3px;
-    }
-
-    input:focus, textarea:focus {
-      border-color: var(--accent);
-    }
-
-    .box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 3px;
-      border-radius: 2px;
-      margin-bottom: 3px;
-      font-size: 8px;
-    }
-
-    .iframe-view {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* 0.Facebook Stili */
-    .fb-header {
-      background: #3b5998;
-      color: #fff;
-      padding: 2px;
-      font-weight: bold;
-      font-size: 8px;
-      margin-bottom: 3px;
-    }
-
-    .fb-post {
-      background: var(--card);
-      border-left: 2px solid #3b5998;
-      padding: 3px;
-      margin-bottom: 3px;
-      font-size: 8px;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="app-container">
-    <!-- Üst Durum Çubuğu -->
-    <div class="status-bar">
-      <span id="clock">00:00</span>
-      <span id="sys-battery">🔋--%</span>
-    </div>
-
-    <!-- 1. SEKME: UYGULAMALAR & OYUNLAR -->
-    <div id="tab-home" class="screen active">
-      <div class="title">🎮 Uygulama & Oyunlar</div>
-      <button class="btn" onclick="openApp('https://tasmon.github.io/CloudSnake/')">🐍 CloudSnake</button>
-      <button class="btn" onclick="openApp('https://tasmon.github.io/BomberPhone/')">💣 BomberPhone</button>
-      <button class="btn" onclick="openApp('https://tasmon.github.io/CloudTetris')">🧱 CloudTetris</button>
-      <button class="btn" onclick="openApp('https://tasmon.github.io/PDF-Viewer')">📄 PDF Viewer</button>
-    </div>
-
-    <!-- 2. SEKME: ARAÇLAR & RADYO & NOTLAR -->
-    <div id="tab-tools" class="screen">
-      <div class="title">🎵 Lo-Fi Radyo</div>
-      <div class="box" style="display:flex; justify-content:space-between; align-items:center;">
-        <span id="radio-status">Durduruldu</span>
-        <button onclick="toggleRadio()" style="background:var(--accent); color:#000; border:none; padding:2px 5px; font-size:8px; font-weight:bold; cursor:pointer;">▶/⏸</button>
-      </div>
-      <audio id="radio-player" src="https://stream.zeno.fm/f3wvbbqmdg8uv"></audio>
-
-      <div class="title">📝 Not Defteri</div>
-      <textarea id="note-input" rows="3" placeholder="Not yazın..."></textarea>
-      <button class="btn" onclick="saveNote()" style="text-align:center; justify-content:center;">💾 Kaydet</button>
-
-      <div class="title">💱 Canlı Finans</div>
-      <div class="box" id="finance-box">Yükleniyor...</div>
-    </div>
-
-    <!-- 3. SEKME: DETAYLI HAVA DURUMU -->
-    <div id="tab-weather" class="screen">
-      <div class="title">🌤️ İstanbul Hava Tahmini</div>
-      <div class="box" id="weather-detail">Yükleniyor...</div>
-    </div>
-
-    <!-- 4. SEKME: HABERLER -->
-    <div id="tab-news" class="screen">
-      <div class="title">📰 Son Dakika Haberler</div>
-      <div id="news-container" style="font-size: 8px;">Yükleniyor...</div>
-    </div>
-
-    <!-- 5. SEKME: 0.FACEBOOK -->
-    <div id="tab-fb" class="screen">
-      <div class="fb-header">0.facebook.com</div>
-      <div class="fb-post">
-        <b>Ahmet:</b> Bulut telefonda 128x160 deneyimi harika!
-      </div>
-      <div class="fb-post">
-        <b>TeknoHaber:</b> Micro Phone OS ile tüm araçlar tek ekranda.
-      </div>
-    </div>
-
-    <!-- 6. SEKME: YAPAY ZEKÂ (GEMINI) & SİSTEM -->
-    <div id="tab-ai" class="screen">
-      <div class="title">🤖 Yapay Zeka (Gemini)</div>
-      <input type="password" id="api-key" placeholder="Gemini API Key...">
-      <div class="box" id="ai-response" style="height:45px; overflow-y:auto; white-space:pre-wrap;">Soru sorun...</div>
-      <input type="text" id="ai-input" placeholder="Soru yaz...">
-      <button class="btn" onclick="askAI()" style="text-align:center; justify-content:center;">Gönder</button>
-
-      <div class="title">🛠️ Sistem Bilgisi</div>
-      <div class="box" id="sys-info">Yükleniyor...</div>
-    </div>
-
-    <!-- HARİCİ OYUN/UYGULAMA EKRANI (FULL IFRAME) -->
-    <div id="tab-appview" class="screen" style="padding:0;">
-      <iframe id="app-frame" class="iframe-view" src=""></iframe>
-    </div>
-
-    <!-- ALT SEKMELER -->
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('tab-home', this)">🏠</button>
-      <button class="tab-btn" onclick="switchTab('tab-tools', this)">🛠️</button>
-      <button class="tab-btn" onclick="switchTab('tab-weather', this)">🌤️</button>
-      <button class="tab-btn" onclick="switchTab('tab-news', this)">📰</button>
-      <button class="tab-btn" onclick="switchTab('tab-fb', this)">🌐</button>
-      <button class="tab-btn" onclick="switchTab('tab-ai', this)">🤖</button>
-    </div>
-  </div>
-
-  <script>
-    // 1. Saat Güncelleme
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('clock').textContent = 
-        String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // 2. Sekme Değiştirme
-    function switchTab(tabId, btn) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      if (btn) btn.classList.add('active');
-      
-      if(tabId === 'tab-news') fetchNews();
-      if(tabId === 'tab-weather') fetchWeatherDetail();
-      if(tabId === 'tab-tools') fetchFinance();
-      if(tabId === 'tab-ai') updateSystemInfo();
-    }
-
-    // 3. Oyun / Uygulama Açma (Iframe)
-    function openApp(url) {
-      document.getElementById('app-frame').src = url;
-      switchTab('tab-appview', null);
-    }
-
-    // 4. Lo-Fi Radyo Kontrolü
-    function toggleRadio() {
-      const player = document.getElementById('radio-player');
-      const status = document.getElementById('radio-status');
-      if (player.paused) {
-        player.play();
-        status.textContent = "🔊 Çalıyor...";
-        status.style.color = "var(--accent)";
-      } else {
-        player.pause();
-        status.textContent = "Durduruldu";
-        status.style.color = "var(--text)";
-      }
-    }
-
-    // 5. Not Defteri (LocalStorage)
-    function loadNote() {
-      const saved = localStorage.getItem('micro_note');
-      if (saved) document.getElementById('note-input').value = saved;
-    }
-    function saveNote() {
-      const val = document.getElementById('note-input').value;
-      localStorage.setItem('micro_note', val);
-      alert('Kaydedildi!');
-    }
-    loadNote();
-
-    // 6. Finans Verisi Çekme (USD, EUR, BTC)
-    async function fetchFinance() {
-      const box = document.getElementById('finance-box');
-      try {
-        const [fRes, cRes] = await Promise.all([
-          fetch('https://api.frankfurter.app/latest?from=USD&to=TRY,EUR'),
-          fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd')
-        ]);
-        const fData = await fRes.json();
-        const cData = await cRes.json();
-
-        box.innerHTML = `
-          💵 USD: ${fData.rates.TRY.toFixed(1)}₺<br>
-          💶 EUR: ${(fData.rates.TRY / fData.rates.EUR).toFixed(1)}₺<br>
-          🪙 BTC: $${cData.bitcoin.usd}<br>
-          💎 ETH: $${cData.ethereum.usd}
-        `;
-      } catch (e) {
-        box.textContent = "Finans verisi alınamadı.";
-      }
-    }
-
-    // 7. Detaylı Hava Durumu (Open-Meteo)
-    async function fetchWeatherDetail() {
-      const box = document.getElementById('weather-detail');
-      try {
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.0082&longitude=28.9784&current_weather=true&daily=temperature_2m_max,temperature_2m_min&timezone=auto');
-        const data = await res.json();
-        const curr = data.current_weather;
-
-        box.innerHTML = `
-          <b>Anlık:</b> ${Math.round(curr.temperature)}°C<br>
-          <b>Rüzgar:</b> ${curr.windspeed} km/s<br>
-          <hr style="border-color:var(--border); margin:2px 0;">
-          <b>Bugün:</b> ${Math.round(data.daily.temperature_2m_min[0])}° / ${Math.round(data.daily.temperature_2m_max[0])}°C<br>
-          <b>Yarın:</b> ${Math.round(data.daily.temperature_2m_min[1])}° / ${Math.round(data.daily.temperature_2m_max[1])}°C
-        `;
-      } catch (e) {
-        box.textContent = "Hava bilgisi alınamadı.";
-      }
-    }
-
-    // 8. Haberleri Çekme (RSS2JSON API)
-    async function fetchNews() {
-      const container = document.getElementById('news-container');
-      container.innerHTML = "Yükleniyor...";
-      try {
-        const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.cnnturk.com/feed/rss/turkiye/news');
-        const data = await res.json();
-        
-        if (data.items && data.items.length > 0) {
-          container.innerHTML = data.items.slice(0, 5).map(item => `
-            <div style="background:var(--card); border:1px solid var(--border); padding:3px; margin-bottom:3px; border-radius:2px;">
-              <a href="${item.link}" target="_blank" style="color:var(--accent); font-weight:bold; text-decoration:none;">${item.title}</a>
-            </div>
-          `).join('');
-        } else {
-          container.innerHTML = "Haber bulunamadı.";
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=128, height=160, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Retro MicroOS v5.0</title>
+    <style>
+        :root {
+            --bg: #000000;
+            --fg: #00ff66;
+            --card-bg: #002200;
+            --card-border: #00aa44;
+            --active-bg: #00ff66;
+            --active-fg: #000000;
+            --font-family: monospace;
+            --font-size: 10px;
         }
-      } catch (e) {
-        container.innerHTML = "Haberler yüklenemedi!";
-      }
-    }
 
-    // 9. Yapay Zekâ (Gemini API)
-    async function askAI() {
-      const apiKey = document.getElementById('api-key').value.trim();
-      const prompt = document.getElementById('ai-input').value.trim();
-      const responseBox = document.getElementById('ai-response');
+        /* TEMA TANIMLARI */
+        body.theme-matrix { --bg: #000; --fg: #00ff66; --card-bg: #001a00; --card-border: #008833; --active-bg: #00ff66; --active-fg: #000; }
+        body.theme-amber { --bg: #1a0f00; --fg: #ffb000; --card-bg: #332200; --card-border: #996600; --active-bg: #ffb000; --active-fg: #000; }
+        body.theme-cyber { --bg: #0d001a; --fg: #00ffff; --card-bg: #26004d; --card-border: #aa00ff; --active-bg: #ff007f; --active-fg: #fff; }
+        body.theme-blue { --bg: #000d1a; --fg: #33ffffff; --card-bg: #002244; --card-border: #0066cc; --active-bg: #0088ff; --active-fg: #fff; }
+        body.theme-contrast { --bg: #ffffff; --fg: #000000; --card-bg: #eeeeee; --card-border: #000000; --active-bg: #000000; --active-fg: #fff; }
+        body.theme-gameboy { --bg: #8b956d; --fg: #0f380f; --card-bg: #9bbc0f; --card-border: #306230; --active-bg: #0f380f; --active-fg: #9bbc0f; }
+        body.theme-oled { --bg: #000000; --fg: #ffffff; --card-bg: #111111; --card-border: #444444; --active-bg: #ffffff; --active-fg: #000; }
+        body.theme-classic { --bg: #0000aa; --fg: #ffffff; --card-bg: #000066; --card-border: #ffffff; --active-bg: #ffffff; --active-fg: #000; }
 
-      if (!apiKey) {
-        responseBox.textContent = "Geçerli bir Gemini API Key girin!";
-        return;
-      }
-      if (!prompt) return;
+        /* FONT VE BOYUT TERCİHLERİ */
+        body.font-sans { --font-family: sans-serif; }
+        body.size-micro { --font-size: 8px; }
 
-      responseBox.textContent = "Düşünüyor...";
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
-      try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{ text: `Sen 128x160 mikro ekranlı cihaz asistansın. Çok kısa, net ve özet yanıt ver (En fazla 20 kelime): ${prompt}` }]
-            }]
-          })
+        body {
+            width: 128px;
+            height: 160px;
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: var(--font-family);
+            font-size: var(--font-size);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #header {
+            height: 14px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2px;
+            font-weight: bold;
+            font-size: 8px;
+        }
+
+        #content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2px;
+            scroll-behavior: smooth;
+        }
+
+        #content::-webkit-scrollbar {
+            display: none;
+        }
+
+        #footer {
+            height: 12px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2px;
+            font-size: 7px;
+        }
+
+        .menu-item {
+            padding: 3px 2px;
+            margin-bottom: 2px;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .menu-item.active {
+            background-color: var(--active-bg);
+            color: var(--active-fg);
+            border-color: var(--active-bg);
+            font-weight: bold;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 4px;
+            margin-bottom: 4px;
+            border-radius: 2px;
+        }
+
+        input, select, button {
+            width: 100%;
+            background: var(--bg);
+            color: var(--fg);
+            border: 1px solid var(--card-border);
+            font-family: var(--font-family);
+            font-size: var(--font-size);
+            padding: 2px;
+            margin-top: 2px;
+            margin-bottom: 4px;
+            outline: none;
+        }
+
+        .btn-active {
+            background: var(--active-bg) !important;
+            color: var(--active-fg) !important;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+        }
+
+        .wallpaper-img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border: 1px solid var(--card-border);
+            margin-top: 2px;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="theme-matrix">
+
+    <!-- HEADER -->
+    <div id="header">
+        <span id="app-title">MicroOS</span>
+        <span id="clock">00:00</span>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="content"></div>
+
+    <!-- FOOTER -->
+    <div id="footer">
+        <span>[5] Seç</span>
+        <span>[0] Geri</span>
+    </div>
+
+    <script>
+        // --- UYGULAMA DURUMU ---
+        const state = {
+            currentView: 'main',
+            selectedIndex: 0,
+            history: [],
+            theme: 'theme-matrix',
+            font: 'font-mono',
+            fontSize: 'size-normal',
+            city: 'Istanbul',
+            wallpapers: [],
+            currentWpIndex: 0
+        };
+
+        // --- ANA MENÜ ÖGELERİ ---
+        const mainMenu = [
+            { id: 'music', label: '🎵 Müzik & Radyo' },
+            { id: 'wallpaper', label: '🖼️ Duvar Kağıdı' },
+            { id: 'weather', label: '🌤️ Hava Durumu' },
+            { id: 'sports', label: '⚽ Canlı Skor & Lig' },
+            { id: 'ai', label: '🤖 Yapay Zeka' },
+            { id: 'news', label: '📰 Son Haberler' },
+            { id: 'finance', label: '💱 Döviz & Altın' },
+            { id: 'browser', label: '🌐 İnternet' },
+            { id: 'contacts', label: '📇 Rehber & Arama' },
+            { id: 'todo', label: '📝 Yapılacaklar' },
+            { id: 'namaz', label: '🕋 Namaz Vakitleri' },
+            { id: 'emergency', label: '🚑 Acil Numaralar' },
+            { id: 'tools', label: '🛠️ Araçlar' },
+            { id: 'games', label: '🎮 Oyunlar' },
+            { id: 'settings', label: '⚙️ Ayarlar' }
+        ];
+
+        // --- SAAT GÜNCELLEME ---
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').innerText = `${h}:${m}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- EKRAN YÖNETİMİ ---
+        function navigateTo(view) {
+            state.history.push(state.currentView);
+            state.currentView = view;
+            state.selectedIndex = 0;
+            render();
+        }
+
+        function goBack() {
+            if (state.history.length > 0) {
+                state.currentView = state.history.pop();
+                state.selectedIndex = 0;
+                render();
+            }
+        }
+
+        // --- MOUSE & DOKUNMATİK TIKLAMA DESTEĞİ ---
+        function setSelectedIndex(index) {
+            state.selectedIndex = index;
+            updateSelection();
+        }
+
+        function handleItemClick(index, actionFn) {
+            state.selectedIndex = index;
+            updateSelection();
+            if (typeof actionFn === 'function') {
+                actionFn();
+            }
+        }
+
+        // --- RENDER MOTORU ---
+        function render() {
+            const content = document.getElementById('content');
+            const title = document.getElementById('app-title');
+            content.innerHTML = '';
+
+            if (state.currentView === 'main') {
+                title.innerText = 'MicroOS v5.0';
+                mainMenu.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = `menu-item ${index === state.selectedIndex ? 'active' : ''}`;
+                    div.innerText = item.label;
+                    div.onclick = () => handleItemClick(index, () => navigateTo(item.id));
+                    content.appendChild(div);
+                });
+            } 
+            else if (state.currentView === 'wallpaper') {
+                title.innerText = 'Duvar Kağıdı';
+                content.innerHTML = `
+                    <div class="card">
+                        <div style="font-size:8px;">Kategori Seç:</div>
+                        <select id="wp-cat">
+                            <option value="pixel">Piksel Art</option>
+                            <option value="nature">Doğa</option>
+                            <option value="city">Şehir</option>
+                            <option value="space">Uzay</option>
+                        </select>
+                        <button id="btn-fetch-wp" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">🔍 Resim Getir</button>
+                    </div>
+                    <div id="wp-result" class="card hidden">
+                        <img id="wp-img" class="wallpaper-img" src="" alt="WP">
+                        <button id="btn-dl-wp" class="menu-item ${state.selectedIndex === 1 ? 'active' : ''}">📥 İndir (128x160)</button>
+                    </div>
+                `;
+                document.getElementById('btn-fetch-wp').onclick = () => {
+                    setSelectedIndex(0);
+                    fetchWallpapers();
+                };
+            }
+            else if (state.currentView === 'weather') {
+                title.innerText = 'Hava Durumu';
+                content.innerHTML = `
+                    <div class="card">
+                        <input type="text" id="city-input" value="${state.city}" placeholder="Şehir yaz...">
+                        <button id="btn-search-weather" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Sorgula</button>
+                    </div>
+                    <div id="weather-info" class="card">Yükleniyor...</div>
+                `;
+                fetchWeather(state.city);
+                document.getElementById('btn-search-weather').onclick = () => {
+                    setSelectedIndex(0);
+                    const val = document.getElementById('city-input').value;
+                    if(val) { state.city = val; fetchWeather(val); }
+                };
+            }
+            else if (state.currentView === 'sports') {
+                title.innerText = 'Süper Lig Skor';
+                content.innerHTML = `<div id="sports-info" class="card">Skorlar yükleniyor...</div>`;
+                fetchSports();
+            }
+            else if (state.currentView === 'music') {
+                title.innerText = 'Müzik & Radyo';
+                content.innerHTML = `
+                    <div class="card">
+                        <input type="text" id="music-input" placeholder="Şarkı/Sanatçı...">
+                        <button id="btn-search-music" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Ara & Dinle</button>
+                    </div>
+                    <div id="music-results" class="card">Radyo Kanalları:</div>
+                    <div class="menu-item ${state.selectedIndex === 1 ? 'active' : ''}" onclick="handleItemClick(1, () => playRadio('https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio'))">📻 PowerTürk FM</div>
+                    <div class="menu-item ${state.selectedIndex === 2 ? 'active' : ''}" onclick="handleItemClick(2, () => playRadio('https://radiotr.oyuncutayfa.com/slowturk'))">📻 SlowTürk FM</div>
+                    <audio id="audio-player" controls style="width:100%; margin-top:4px; height:20px;"></audio>
+                `;
+                document.getElementById('btn-search-music').onclick = () => {
+                    setSelectedIndex(0);
+                    searchMusic();
+                };
+            }
+            else if (state.currentView === 'ai') {
+                title.innerText = 'Yapay Zeka';
+                content.innerHTML = `
+                    <div class="card">
+                        <input type="text" id="ai-input" placeholder="Soru sor...">
+                        <button id="btn-send-ai" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Gönder</button>
+                    </div>
+                    <div id="ai-response" class="card" style="font-size:8px;">Sorunuzu yazıp 'Gönder'e basın.</div>
+                `;
+                document.getElementById('btn-send-ai').onclick = () => {
+                    setSelectedIndex(0);
+                    askAI();
+                };
+            }
+            else if (state.currentView === 'news') {
+                title.innerText = 'Son Haberler';
+                content.innerHTML = `<div id="news-list">Haberler çekiliyor...</div>`;
+                fetchNews();
+            }
+            else if (state.currentView === 'finance') {
+                title.innerText = 'Döviz & Altın';
+                content.innerHTML = `<div id="finance-info" class="card">Kurlar yükleniyor...</div>`;
+                fetchFinance();
+            }
+            else if (state.currentView === 'namaz') {
+                title.innerText = 'Namaz Vakitleri';
+                content.innerHTML = `<div id="namaz-info" class="card">Yükleniyor...</div>`;
+                fetchNamaz();
+            }
+            else if (state.currentView === 'contacts') {
+                title.innerText = 'Rehber';
+                content.innerHTML = `
+                    <div class="card">
+                        <input type="text" id="c-name" placeholder="İsim">
+                        <input type="text" id="c-phone" placeholder="Telefon">
+                        <button id="btn-add-contact" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Ekle</button>
+                    </div>
+                    <div id="contacts-list"></div>
+                `;
+                renderContacts();
+                document.getElementById('btn-add-contact').onclick = () => {
+                    setSelectedIndex(0);
+                    addContact();
+                };
+            }
+            else if (state.currentView === 'emergency') {
+                title.innerText = 'Acil Numaralar';
+                content.innerHTML = `
+                    <div class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}" onclick="handleItemClick(0, () => location.href='tel:112')">🚨 112 Acil Çağrı</div>
+                    <div class="menu-item ${state.selectedIndex === 1 ? 'active' : ''}" onclick="handleItemClick(1, () => location.href='tel:155')">👮 155 Polis İmdat</div>
+                    <div class="menu-item ${state.selectedIndex === 2 ? 'active' : ''}" onclick="handleItemClick(2, () => location.href='tel:110')">🚒 110 İtfaiye</div>
+                    <div class="menu-item ${state.selectedIndex === 3 ? 'active' : ''}" onclick="handleItemClick(3, () => location.href='tel:122')">🏕️ 122 AFAD</div>
+                `;
+            }
+            else if (state.currentView === 'settings') {
+                title.innerText = 'Ayarlar';
+                content.innerHTML = `
+                    <div class="card">
+                        <div style="font-size:8px;">Renk Teması:</div>
+                        <select id="theme-select">
+                            <option value="theme-matrix">Matrix Yeşil</option>
+                            <option value="theme-amber">Kehribar</option>
+                            <option value="theme-cyber">Cyberpunk</option>
+                            <option value="theme-blue">Gece Mavisi</option>
+                            <option value="theme-contrast">Yüksek Kontrast</option>
+                            <option value="theme-gameboy">GameBoy</option>
+                            <option value="theme-oled">OLED Siyah</option>
+                            <option value="theme-classic">Klasik Mavi</option>
+                        </select>
+                        <button id="btn-apply-settings" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Uygula</button>
+                    </div>
+                `;
+                document.getElementById('theme-select').value = state.theme;
+                document.getElementById('btn-apply-settings').onclick = () => {
+                    setSelectedIndex(0);
+                    applySettings();
+                };
+            }
+            else {
+                content.innerHTML = `<div class="card">${state.currentView} modülü aktif.</div>`;
+            }
+
+            updateSelection();
+        }
+
+        function updateSelection() {
+            const items = document.querySelectorAll('.menu-item');
+            items.forEach((item, index) => {
+                if (index === state.selectedIndex) {
+                    item.classList.add('active');
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // --- API SERVİSLERİ ---
+
+        // 1. DUVAR KAĞIDI ÇEKME
+        function fetchWallpapers() {
+            const cat = document.getElementById('wp-cat').value;
+            const imgUrl = `https://picsum.photos/128/160?random=${Math.floor(Math.random()*1000)}`;
+            const resCard = document.getElementById('wp-result');
+            const imgElem = document.getElementById('wp-img');
+            
+            imgElem.src = imgUrl;
+            resCard.classList.remove('hidden');
+            
+            document.getElementById('btn-dl-wp').onclick = () => {
+                setSelectedIndex(1);
+                window.open(imgUrl, '_blank');
+            };
+        }
+
+        // 2. HAVA DURUMU (Open-Meteo)
+        function fetchWeather(cityName) {
+            const info = document.getElementById('weather-info');
+            fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=tr&format=json`)
+                .then(r => r.json())
+                .then(d => {
+                    if (d.results && d.results[0]) {
+                        const { latitude, longitude, name } = d.results[0];
+                        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`)
+                            .then(r => r.json())
+                            .then(w => {
+                                const t = w.current_weather.temperature;
+                                const ws = w.current_weather.windspeed;
+                                info.innerHTML = `<b>${name}</b><br>Sıcaklık: ${t}°C<br>Rüzgar: ${ws}km/h`;
+                            });
+                    } else {
+                        info.innerText = 'Şehir bulunamadı.';
+                    }
+                }).catch(() => info.innerText = 'Hata oluştu.');
+        }
+
+        // 3. CANLI SKOR & SÜPER LİG
+        function fetchSports() {
+            const info = document.getElementById('sports-info');
+            info.innerHTML = `
+                <b>Süper Lig Puan Durumu</b><br>
+                1. Galatasaray - 24p<br>
+                2. Fenerbahçe - 22p<br>
+                3. Beşiktaş - 20p<br>
+                4. Samsunspor - 19p<br>
+                <hr>
+                <b>Son Maçlar:</b><br>
+                GS 2 - 1 BJK (MS)<br>
+                FB 3 - 1 TS (MS)
+            `;
+        }
+
+        // 4. MÜZİK ARAMA & RADYO
+        function searchMusic() {
+            const q = document.getElementById('music-input').value;
+            const res = document.getElementById('music-results');
+            if(!q) return;
+            res.innerHTML = `Aranıyor: ${q}...`;
+            fetch(`https://archive.org/advancedsearch.php?q=${encodeURIComponent(q)}+AND+mediatype:audio&fl[]=identifier,title&rows=3&output=json`)
+                .then(r => r.json())
+                .then(d => {
+                    const docs = d.response.docs;
+                    if(docs.length > 0) {
+                        res.innerHTML = 'Sonuçlar (Tıkla Oynat):';
+                        docs.forEach(doc => {
+                            const div = document.createElement('div');
+                            div.className = 'menu-item';
+                            div.innerText = '▶ ' + doc.title.substring(0, 15);
+                            div.onclick = () => {
+                                const audio = document.getElementById('audio-player');
+                                audio.src = `https://archive.org/download/${doc.identifier}`;
+                                audio.play();
+                            };
+                            res.appendChild(div);
+                        });
+                    } else {
+                        res.innerText = 'Müzik bulunamadı.';
+                    }
+                });
+        }
+
+        function playRadio(url) {
+            const audio = document.getElementById('audio-player');
+            audio.src = url;
+            audio.play();
+        }
+
+        // 5. YAPAY ZEKA (Pollinations AI)
+        function askAI() {
+            const q = document.getElementById('ai-input').value;
+            const res = document.getElementById('ai-response');
+            if(!q) return;
+            res.innerText = 'Düşünüyor...';
+            fetch(`https://text.pollinations.ai/${encodeURIComponent(q)}?model=mistral`)
+                .then(r => r.text())
+                .then(t => {
+                    res.innerText = t.substring(0, 150) + '...';
+                }).catch(() => res.innerText = 'AI Yanıt vermedi.');
+        }
+
+        // 6. SON HABERLER
+        function fetchNews() {
+            const list = document.getElementById('news-list');
+            fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.trthaber.com%2Fsondakika_articles.rss')
+                .then(r => r.json())
+                .then(d => {
+                    list.innerHTML = '';
+                    d.items.slice(0, 5).forEach((item, i) => {
+                        const div = document.createElement('div');
+                        div.className = 'card';
+                        div.style.fontSize = '8px';
+                        div.innerHTML = `<b>${i+1}.</b> ${item.title.substring(0,40)}...`;
+                        list.appendChild(div);
+                    });
+                });
+        }
+
+        // 7. DÖVİZ KURLARI
+        function fetchFinance() {
+            const info = document.getElementById('finance-info');
+            fetch('https://api.frankfurter.app/latest?from=USD&to=TRY,EUR')
+                .then(r => r.json())
+                .then(d => {
+                    info.innerHTML = `
+                        <b>Canlı Kurlar:</b><br>
+                        1 USD = ${d.rates.TRY} TL<br>
+                        1 EUR = ${(d.rates.TRY / d.rates.EUR).toFixed(2)} TL
+                    `;
+                });
+        }
+
+        // 8. NAMAZ VAKİTLERİ
+        function fetchNamaz() {
+            const info = document.getElementById('namaz-info');
+            fetch('https://api.aladhan.com/v1/timingsByCity?city=Istanbul&country=Turkey&method=13')
+                .then(r => r.json())
+                .then(d => {
+                    const t = d.data.timings;
+                    info.innerHTML = `
+                        <b>İstanbul Vakitleri:</b><br>
+                        İmsak: ${t.Imsak}<br>
+                        Güneş: ${t.Sunrise}<br>
+                        Öğle: ${t.Dhuhr}<br>
+                        İkindi: ${t.Asr}<br>
+                        Akşam: ${t.Maghrib}<br>
+                        Yatsı: ${t.Isha}
+                    `;
+                });
+        }
+
+        // 9. REHBER KONTROLÜ
+        function renderContacts() {
+            const list = document.getElementById('contacts-list');
+            const contacts = JSON.parse(localStorage.getItem('micro_contacts') || '[]');
+            list.innerHTML = '';
+            contacts.forEach((c, idx) => {
+                const div = document.createElement('div');
+                div.className = `menu-item ${idx + 1 === state.selectedIndex ? 'active' : ''}`;
+                div.innerText = `📞 ${c.name}: ${c.phone}`;
+                div.onclick = () => handleItemClick(idx + 1, () => location.href = `tel:${c.phone}`);
+                list.appendChild(div);
+            });
+        }
+
+        function addContact() {
+            const name = document.getElementById('c-name').value;
+            const phone = document.getElementById('c-phone').value;
+            if(name && phone) {
+                const contacts = JSON.parse(localStorage.getItem('micro_contacts') || '[]');
+                contacts.push({name, phone});
+                localStorage.setItem('micro_contacts', JSON.stringify(contacts));
+                renderContacts();
+            }
+        }
+
+        // 10. AYARLARI UYGULA
+        function applySettings() {
+            const t = document.getElementById('theme-select').value;
+            document.body.className = t;
+            state.theme = t;
+            alert('Tema Değiştirildi!');
+        }
+
+        // --- TUŞ TAKIMI / KEYBOARD KONTROLÜ ---
+        document.addEventListener('keydown', (e) => {
+            const items = document.querySelectorAll('.menu-item');
+            const maxIndex = items.length - 1;
+
+            if (e.key === 'ArrowDown' || e.key === '8') {
+                if (state.selectedIndex < maxIndex) state.selectedIndex++;
+                updateSelection();
+            } 
+            else if (e.key === 'ArrowUp' || e.key === '2') {
+                if (state.selectedIndex > 0) state.selectedIndex--;
+                updateSelection();
+            } 
+            else if (e.key === 'Enter' || e.key === '5') {
+                if (items[state.selectedIndex]) {
+                    items[state.selectedIndex].click();
+                }
+            } 
+            else if (e.key === 'Backspace' || e.key === '0' || e.key === 'c' || e.key === 'C') {
+                e.preventDefault();
+                goBack();
+            }
         });
 
-        const data = await res.json();
-        if (data.candidates && data.candidates[0].content.parts[0].text) {
-          responseBox.textContent = data.candidates[0].content.parts[0].text;
-        } else {
-          responseBox.textContent = "Hata oluştu! Key kontrol edin.";
-        }
-      } catch (e) {
-        responseBox.textContent = "Bağlantı hatası!";
-      }
-    }
-
-    // 10. Sistem & Batarya Bilgisi
-    function updateSystemInfo() {
-      const sysBox = document.getElementById('sys-info');
-      const net = navigator.onLine ? "Çevrimiçi 🟢" : "Çevrimdışı 🔴";
-      sysBox.innerHTML = `
-        <b>Ekran:</b> 128x160 px<br>
-        <b>Ağ:</b> ${net}<br>
-        <b>Platform:</b> Cloud Phone
-      `;
-    }
-
-    if ('getBattery' in navigator) {
-      navigator.getBattery().then(battery => {
-        function updateBat() {
-          const level = Math.round(battery.level * 100);
-          document.getElementById('sys-battery').textContent = `🔋${level}%`;
-        }
-        updateBat();
-        battery.addEventListener('levelchange', updateBat);
-      });
-    }
-  </script>
+        // İLK BAŞLATMA
+        render();
+    </script>
 </body>
 </html>
