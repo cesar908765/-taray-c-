@@ -1,628 +1,663 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=128, height=160, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Retro MicroOS v5.0</title>
-    <style>
-        :root {
-            --bg: #000000;
-            --fg: #00ff66;
-            --card-bg: #002200;
-            --card-border: #00aa44;
-            --active-bg: #00ff66;
-            --active-fg: #000000;
-            --font-family: monospace;
-            --font-size: 10px;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=128, height=160, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>StartPage Browser 128x160 Themes</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; max-width: 100%; }
+    
+    /* TEMA TANIMLARI */
+    :root {
+      --bg: #f2f4f7;
+      --panel: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-contrast: #ffffff;
+      --nav-bg: rgba(0,0,0,0.06);
+      --font-size: 8px;
+    }
 
-        /* TEMA TANIMLARI */
-        body.theme-matrix { --bg: #000; --fg: #00ff66; --card-bg: #001a00; --card-border: #008833; --active-bg: #00ff66; --active-fg: #000; }
-        body.theme-amber { --bg: #1a0f00; --fg: #ffb000; --card-bg: #332200; --card-border: #996600; --active-bg: #ffb000; --active-fg: #000; }
-        body.theme-cyber { --bg: #0d001a; --fg: #00ffff; --card-bg: #26004d; --card-border: #aa00ff; --active-bg: #ff007f; --active-fg: #fff; }
-        body.theme-blue { --bg: #000d1a; --fg: #33ffffff; --card-bg: #002244; --card-border: #0066cc; --active-bg: #0088ff; --active-fg: #fff; }
-        body.theme-contrast { --bg: #ffffff; --fg: #000000; --card-bg: #eeeeee; --card-border: #000000; --active-bg: #000000; --active-fg: #fff; }
-        body.theme-gameboy { --bg: #8b956d; --fg: #0f380f; --card-bg: #9bbc0f; --card-border: #306230; --active-bg: #0f380f; --active-fg: #9bbc0f; }
-        body.theme-oled { --bg: #000000; --fg: #ffffff; --card-bg: #111111; --card-border: #444444; --active-bg: #ffffff; --active-fg: #000; }
-        body.theme-classic { --bg: #0000aa; --fg: #ffffff; --card-bg: #000066; --card-border: #ffffff; --active-bg: #ffffff; --active-fg: #000; }
+    :root.theme-dark {
+      --bg: #0b1220;
+      --panel: #07101a;
+      --text: #e6eef8;
+      --muted: #9aa9bf;
+      --accent: #60a5fa;
+      --accent-contrast: #07101a;
+      --nav-bg: rgba(255,255,255,0.06);
+    }
 
-        /* FONT VE BOYUT TERCİHLERİ */
-        body.font-sans { --font-family: sans-serif; }
-        body.size-micro { --font-size: 8px; }
+    :root.theme-matrix {
+      --bg: #000000;
+      --panel: #001100;
+      --text: #00ff66;
+      --muted: #00aa44;
+      --accent: #00ff66;
+      --accent-contrast: #000000;
+      --nav-bg: rgba(0, 255, 102, 0.1);
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+    :root.theme-amber {
+      --bg: #1a0f00;
+      --panel: #2b1800;
+      --text: #ffb000;
+      --muted: #aa7700;
+      --accent: #ffb000;
+      --accent-contrast: #000000;
+      --nav-bg: rgba(255, 176, 0, 0.1);
+    }
 
-        body {
-            width: 128px;
-            height: 160px;
-            background-color: var(--bg);
-            color: var(--fg);
-            font-family: var(--font-family);
-            font-size: var(--font-size);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+    :root.theme-blue {
+      --bg: #000d1a;
+      --panel: #001a33;
+      --text: #80c0ff;
+      --muted: #0066cc;
+      --accent: #3399ff;
+      --accent-contrast: #ffffff;
+      --nav-bg: rgba(51, 153, 255, 0.1);
+    }
 
-        #header {
-            height: 14px;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2px;
-            font-weight: bold;
-            font-size: 8px;
-        }
+    :root.theme-gameboy {
+      --bg: #8b956d;
+      --panel: #9bbc0f;
+      --text: #0f380f;
+      --muted: #306230;
+      --accent: #0f380f;
+      --accent-contrast: #9bbc0f;
+      --nav-bg: rgba(15, 56, 15, 0.1);
+    }
 
-        #content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2px;
-            scroll-behavior: smooth;
-        }
+    html, body {
+      width: 128px;
+      height: 160px;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: monospace, sans-serif;
+      font-size: var(--font-size);
+      overflow: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
 
-        #content::-webkit-scrollbar {
-            display: none;
-        }
+    .container {
+      width: 128px;
+      height: 160px;
+      margin: 0 auto;
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
 
-        #footer {
-            height: 12px;
-            background: var(--card-bg);
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2px;
-            font-size: 7px;
-        }
+    .topbar {
+      padding: 2px 4px;
+      background: var(--nav-bg);
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      flex: 0 0 auto;
+    }
 
-        .menu-item {
-            padding: 3px 2px;
-            margin-bottom: 2px;
-            border: 1px solid transparent;
-            border-radius: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+    .datetime {
+      font-size: 8px;
+      font-weight: bold;
+      color: var(--text);
+      text-align: center;
+    }
 
-        .menu-item.active {
-            background-color: var(--active-bg);
-            color: var(--active-fg);
-            border-color: var(--active-bg);
-            font-weight: bold;
-        }
+    .screen {
+      padding: 4px;
+      flex: 1 1 auto;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 4px;
-            margin-bottom: 4px;
-            border-radius: 2px;
-        }
+    .screen::-webkit-scrollbar { display: none; }
+    .hidden { display: none !important; }
 
-        input, select, button {
-            width: 100%;
-            background: var(--bg);
-            color: var(--fg);
-            border: 1px solid var(--card-border);
-            font-family: var(--font-family);
-            font-size: var(--font-size);
-            padding: 2px;
-            margin-top: 2px;
-            margin-bottom: 4px;
-            outline: none;
-        }
+    .app-title {
+      font-size: 10px;
+      margin: 1px 0 4px 0;
+      text-align: center;
+      font-weight: bold;
+    }
 
-        .btn-active {
-            background: var(--active-bg) !important;
-            color: var(--active-fg) !important;
-        }
+    .screen h2 {
+      font-size: 9px;
+      margin: 2px 0 4px 0;
+      text-align: center;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2px;
-        }
+    .search-wrap {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+    }
 
-        .wallpaper-img {
-            width: 100%;
-            height: 80px;
-            object-fit: cover;
-            border: 1px solid var(--card-border);
-            margin-top: 2px;
-        }
+    .search-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 3px;
+      border-radius: 3px;
+      border: 1px solid var(--muted);
+      font-size: 8px;
+      background: transparent;
+      color: var(--text);
+      outline: none;
+    }
 
-        .hidden { display: none !important; }
-    </style>
+    .btn {
+      background: var(--accent);
+      color: var(--accent-contrast);
+      border: none;
+      padding: 3px 4px;
+      border-radius: 3px;
+      font-size: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+
+    .btn.full {
+      width: 100%;
+      margin-top: 3px;
+    }
+
+    .speed-dial {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      margin-top: 4px;
+    }
+
+    .sd-item {
+      background: var(--nav-bg);
+      border: 1px solid var(--muted);
+      border-radius: 3px;
+      padding: 3px;
+      text-align: center;
+      font-size: 7px;
+      color: var(--text);
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+    }
+
+    .sd-item:focus, .sd-item:hover {
+      background: var(--accent);
+      color: var(--accent-contrast);
+    }
+
+    .menu-list {
+      list-style: none;
+      padding: 0;
+      margin: 2px 0 0 0;
+    }
+
+    .menu-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--nav-bg);
+      border: 1px solid transparent;
+      border-radius: 3px;
+      padding: 3px;
+      margin-bottom: 2px;
+      font-size: 8px;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .menu-item:focus, .menu-item:hover {
+      outline: none;
+      background: var(--accent);
+      color: var(--accent-contrast);
+    }
+
+    .menu-item .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 11px;
+      height: 11px;
+      border-radius: 2px;
+      background: var(--accent);
+      color: var(--accent-contrast);
+      font-size: 7px;
+      font-weight: bold;
+      flex: 0 0 auto;
+    }
+
+    .menu-item:focus .num, .menu-item:hover .num {
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 3px 0 0 0;
+    }
+
+    .list li {
+      display: flex;
+      flex-direction: column;
+      padding: 3px;
+      border-radius: 3px;
+      margin-bottom: 3px;
+      background: var(--nav-bg);
+      font-size: 7px;
+      gap: 2px;
+      border: 1px solid var(--muted);
+    }
+
+    .list li a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .list-btns {
+      display: flex;
+      gap: 2px;
+      margin-top: 1px;
+    }
+
+    .list-btns .btn {
+      flex: 1;
+      font-size: 7px;
+      padding: 2px;
+    }
+
+    .fav-form {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 3px;
+    }
+
+    .fav-form input, select {
+      padding: 2px;
+      border-radius: 3px;
+      border: 1px solid var(--muted);
+      font-size: 8px;
+      background: var(--panel);
+      color: var(--text);
+      width: 100%;
+    }
+
+    .setting-row {
+      margin: 3px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .setting-row label {
+      font-size: 7px;
+      color: var(--muted);
+    }
+
+    .about {
+      background: var(--nav-bg);
+      padding: 3px;
+      border-radius: 3px;
+      font-size: 7px;
+      color: var(--muted);
+      line-height: 1.1;
+      border: 1px solid var(--muted);
+    }
+
+    .softkey-bar {
+      padding: 2px 4px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      background: var(--nav-bg);
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2px;
+      height: 15px;
+    }
+
+    .softkey {
+      background: transparent;
+      border: none;
+      color: var(--accent);
+      font-size: 8px;
+      font-weight: bold;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .status {
+      font-size: 7px;
+      color: var(--muted);
+      text-align: center;
+      flex: 1 1 auto;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  </style>
 </head>
-<body class="theme-matrix">
+<body>
+  <div id="app" class="container">
+    <header class="topbar">
+      <div id="datetime" class="datetime"></div>
+    </header>
 
-    <!-- HEADER -->
-    <div id="header">
-        <span id="app-title">MicroOS</span>
-        <span id="clock">00:00</span>
-    </div>
+    <!-- HOME -->
+    <main class="screen" id="screen-home" data-screen="home">
+      <h1 class="app-title">StartPage Lite</h1>
 
-    <!-- MAIN CONTENT -->
-    <div id="content"></div>
+      <div class="search-wrap">
+        <input id="search-input" class="search-input" type="search" placeholder="Ara veya URL..." />
+        <button id="btn-go" class="btn">Ara</button>
+      </div>
 
-    <!-- FOOTER -->
-    <div id="footer">
-        <span>[5] Seç</span>
-        <span>[0] Geri</span>
-    </div>
+      <!-- Hızlı Erişim -->
+      <div class="speed-dial">
+        <div class="sd-item" onclick="openUrl('https://m.wikipedia.org')">1. Vikipedi</div>
+        <div class="sd-item" onclick="openUrl('https://eksisozluk.com')">2. Ekşi</div>
+        <div class="sd-item" onclick="openUrl('https://m.youtube.com')">3. YouTube</div>
+        <div class="sd-item" onclick="openUrl('https://lite.duckduckgo.com/lite/')">4. DDG Lite</div>
+      </div>
+    </main>
 
-    <script>
-        // --- UYGULAMA DURUMU ---
-        const state = {
-            currentView: 'main',
-            selectedIndex: 0,
-            history: [],
-            theme: 'theme-matrix',
-            font: 'font-mono',
-            fontSize: 'size-normal',
-            city: 'Istanbul',
-            wallpapers: [],
-            currentWpIndex: 0
+    <!-- MENU -->
+    <main class="screen hidden" id="screen-menu" data-screen="menu">
+      <h2>Menü</h2>
+      <ul class="menu-list" id="menu-list">
+        <li><button class="menu-item" data-target="favorites"><span class="num">1</span> Favoriler</button></li>
+        <li><button class="menu-item" data-target="history"><span class="num">2</span> Geçmiş</button></li>
+        <li><button class="menu-item" data-target="settings"><span class="num">3</span> Ayarlar</button></li>
+        <li><button class="menu-item" data-target="help"><span class="num">4</span> Yardım</button></li>
+      </ul>
+    </main>
+
+    <!-- FAVORITES -->
+    <main class="screen hidden" id="screen-favorites" data-screen="favorites">
+      <h2>Favoriler</h2>
+      <form id="add-favorite-form" class="fav-form" onsubmit="return false;">
+        <input id="fav-title" type="text" placeholder="Başlık" required />
+        <input id="fav-url" type="text" placeholder="google.com" required />
+        <button id="btn-save-fav" class="btn full">Ekle</button>
+      </form>
+      <ul id="favorites-list" class="list"></ul>
+    </main>
+
+    <!-- HISTORY -->
+    <main class="screen hidden" id="screen-history" data-screen="history">
+      <h2>Geçmiş</h2>
+      <button id="btn-clear-history" class="btn full">Temizle</button>
+      <ul id="history-list" class="list"></ul>
+    </main>
+
+    <!-- SETTINGS -->
+    <main class="screen hidden" id="screen-settings" data-screen="settings">
+      <h2>Ayarlar</h2>
+
+      <div class="setting-row">
+        <label>Görünüm / Tema</label>
+        <select id="theme-select">
+          <option value="theme-day">☀️ Gündüz (Açık)</option>
+          <option value="theme-dark">🌙 Gece (Koyu)</option>
+          <option value="theme-matrix">📟 Matrix Yeşil</option>
+          <option value="theme-amber">🟧 Nokia Kehribar</option>
+          <option value="theme-blue">🌊 Gece Mavisi</option>
+          <option value="theme-gameboy">🕹️ GameBoy Zeytin</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <label>Arama Motoru</label>
+        <select id="search-engine">
+          <option value="https://www.bing.com/search?q=">Bing</option>
+          <option value="https://www.google.com/search?q=">Google</option>
+          <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+          <option value="https://search.brave.com/search?q=">Brave</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <label>Yazı Boyutu</label>
+        <select id="font-size-select">
+          <option value="7px">Küçük (7px)</option>
+          <option value="8px" selected>Normal (8px)</option>
+          <option value="9px">Büyük (9px)</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="about">
+          <strong>StartPage v3.3</strong> (128x160)<br>
+          Gelişmiş Tema Destekli
+        </div>
+      </div>
+    </main>
+
+    <!-- HELP -->
+    <main class="screen hidden" id="screen-help" data-screen="help">
+      <h2>Yardım</h2>
+      <div style="font-size:7px; line-height:1.2;">
+        • <strong>Arama:</strong> Kelime veya URL yazın.<br>
+        • <strong>Navigasyon:</strong> Sol Tuş (Menu), Sağ Tuş / 0 (Geri).<br>
+        • <strong>Temalar:</strong> Ayarlar ekranından 6 farklı renk seçeneğini değiştirebilirsiniz.
+      </div>
+    </main>
+
+    <footer class="softkey-bar">
+      <button id="btn-lsk" class="softkey">Menu</button>
+      <div class="status" id="status"></div>
+      <button id="btn-rsk" class="softkey">Geri</button>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const screens = {
+        home: document.getElementById('screen-home'),
+        menu: document.getElementById('screen-menu'),
+        favorites: document.getElementById('screen-favorites'),
+        history: document.getElementById('screen-history'),
+        settings: document.getElementById('screen-settings'),
+        help: document.getElementById('screen-help')
+      };
+
+      const btnLsk = document.getElementById('btn-lsk');
+      const btnRsk = document.getElementById('btn-rsk');
+      const btnGo = document.getElementById('btn-go');
+      const searchInput = document.getElementById('search-input');
+      const favoritesList = document.getElementById('favorites-list');
+      const historyList = document.getElementById('history-list');
+      const favTitleInput = document.getElementById('fav-title');
+      const favUrlInput = document.getElementById('fav-url');
+      const btnSaveFav = document.getElementById('btn-save-fav');
+      const btnClearHistory = document.getElementById('btn-clear-history');
+      const searchEngineSelect = document.getElementById('search-engine');
+      const fontSizeSelect = document.getElementById('font-size-select');
+      const themeSelect = document.getElementById('theme-select');
+      const statusEl = document.getElementById('status');
+      const datetimeEl = document.getElementById('datetime');
+      const menuItems = Array.from(document.querySelectorAll('.menu-item'));
+
+      let favorites = [];
+      let historyEntries = [];
+      let settings = {
+        searchEngine: 'https://www.bing.com/search?q=',
+        theme: 'theme-day',
+        fontSize: '8px'
+      };
+
+      const navStack = [];
+
+      function saveFavorites() { try { localStorage.setItem('sp_fav_v3', JSON.stringify(favorites)); } catch (e) {} }
+      function saveHistory() { try { localStorage.setItem('sp_hist_v3', JSON.stringify(historyEntries)); } catch (e) {} }
+      function saveSettings() { try { localStorage.setItem('sp_set_v3', JSON.stringify(settings)); } catch (e) {} }
+
+      function loadAll() {
+        try { favorites = JSON.parse(localStorage.getItem('sp_fav_v3') || '[]'); } catch (e) {}
+        try { historyEntries = JSON.parse(localStorage.getItem('sp_hist_v3') || '[]'); } catch (e) {}
+        try { Object.assign(settings, JSON.parse(localStorage.getItem('sp_set_v3') || '{}')); } catch (e) {}
+      }
+
+      window.openUrl = function(url) {
+        window.open(url, '_blank');
+        addHistory(url, url);
+      };
+
+      function renderFavorites() {
+        favoritesList.innerHTML = '';
+        if (!favorites.length) {
+          favoritesList.innerHTML = '<li style="font-size:7px; color:var(--muted);">Favori yok.</li>';
+          return;
+        }
+        favorites.slice().reverse().forEach((f) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <a href="${f.url}" target="_blank">${f.title || f.url}</a>
+            <div class="list-btns">
+              <button class="btn" onclick="openUrl('${f.url}')">Aç</button>
+              <button class="btn del-btn" style="background:var(--muted);">Sil</button>
+            </div>
+          `;
+          li.querySelector('.del-btn').addEventListener('click', () => {
+            favorites.splice(favorites.indexOf(f), 1);
+            saveFavorites();
+            renderFavorites();
+          });
+          favoritesList.appendChild(li);
+        });
+      }
+
+      function renderHistory() {
+        historyList.innerHTML = '';
+        if (!historyEntries.length) {
+          historyList.innerHTML = '<li style="font-size:7px; color:var(--muted);">Geçmiş yok.</li>';
+          return;
+        }
+        historyEntries.slice().reverse().forEach((h) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <a href="${h.url}" target="_blank">${h.title || h.url}</a>
+            <div class="list-btns">
+              <button class="btn" onclick="openUrl('${h.url}')">Aç</button>
+              <button class="btn del-btn" style="background:var(--muted);">Sil</button>
+            </div>
+          `;
+          li.querySelector('.del-btn').addEventListener('click', () => {
+            historyEntries.splice(historyEntries.indexOf(h), 1);
+            saveHistory();
+            renderHistory();
+          });
+          historyList.appendChild(li);
+        });
+      }
+
+      function addHistory(title, url) {
+        historyEntries.push({ title: title || url, url, time: Date.now() });
+        if (historyEntries.length > 50) historyEntries.shift();
+        saveHistory();
+        renderHistory();
+      }
+
+      function renderScreen(name) {
+        if (!screens[name]) name = 'home';
+        Object.values(screens).forEach((s) => s.classList.add('hidden'));
+        screens[name].classList.remove('hidden');
+      }
+
+      function showScreen(name) {
+        const cur = document.querySelector('.screen:not(.hidden)')?.getAttribute('data-screen');
+        if (cur !== name) navStack.push(cur || 'home');
+        renderScreen(name);
+      }
+
+      function goBack() {
+        if (!navStack.length) { renderScreen('home'); return; }
+        renderScreen(navStack.pop());
+      }
+
+      function performSearch(query) {
+        if (!query || !query.trim()) return;
+        let url = query.trim();
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          if (url.includes('.') && !url.includes(' ')) url = 'https://' + url;
+          else url = (settings.searchEngine || 'https://www.bing.com/search?q=') + encodeURIComponent(url);
+        }
+        openUrl(url);
+      }
+
+      function applyTheme() {
+        document.documentElement.className = settings.theme || 'theme-day';
+        document.documentElement.style.setProperty('--font-size', settings.fontSize || '8px');
+      }
+
+      function updateDateTime() {
+        const now = new Date();
+        datetimeEl.textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      }
+
+      document.addEventListener('keydown', (e) => {
+        const isInput = ['INPUT', 'SELECT'].includes(e.target.tagName);
+        if (['Escape', 'SoftLeft', 'F1'].includes(e.key) && !isInput) { e.preventDefault(); showScreen('menu'); }
+        if (['SoftRight', 'F2', 'Backspace', '0'].includes(e.key) && !isInput) { e.preventDefault(); goBack(); }
+        if (document.querySelector('.screen:not(.hidden)')?.id === 'screen-menu' && /^[1-4]$/.test(e.key)) {
+          menuItems[parseInt(e.key) - 1]?.click();
+        }
+      });
+
+      function init() {
+        loadAll();
+        if (settings.searchEngine) searchEngineSelect.value = settings.searchEngine;
+        if (settings.fontSize) fontSizeSelect.value = settings.fontSize;
+        if (settings.theme) themeSelect.value = settings.theme;
+        
+        applyTheme();
+        renderFavorites();
+        renderHistory();
+
+        btnLsk.onclick = () => showScreen('menu');
+        btnRsk.onclick = goBack;
+        btnGo.onclick = () => performSearch(searchInput.value);
+        searchInput.onkeydown = (e) => { if (e.key === 'Enter') performSearch(searchInput.value); };
+
+        btnSaveFav.onclick = () => {
+          if (favTitleInput.value && favUrlInput.value) {
+            favorites.push({ title: favTitleInput.value, url: favUrlInput.value });
+            saveFavorites();
+            renderFavorites();
+            favTitleInput.value = ''; favUrlInput.value = '';
+          }
         };
 
-        // --- ANA MENÜ ÖGELERİ ---
-        const mainMenu = [
-            { id: 'music', label: '🎵 Müzik & Radyo' },
-            { id: 'wallpaper', label: '🖼️ Duvar Kağıdı' },
-            { id: 'weather', label: '🌤️ Hava Durumu' },
-            { id: 'sports', label: '⚽ Canlı Skor & Lig' },
-            { id: 'ai', label: '🤖 Yapay Zeka' },
-            { id: 'news', label: '📰 Son Haberler' },
-            { id: 'finance', label: '💱 Döviz & Altın' },
-            { id: 'browser', label: '🌐 İnternet' },
-            { id: 'contacts', label: '📇 Rehber & Arama' },
-            { id: 'todo', label: '📝 Yapılacaklar' },
-            { id: 'namaz', label: '🕋 Namaz Vakitleri' },
-            { id: 'emergency', label: '🚑 Acil Numaralar' },
-            { id: 'tools', label: '🛠️ Araçlar' },
-            { id: 'games', label: '🎮 Oyunlar' },
-            { id: 'settings', label: '⚙️ Ayarlar' }
-        ];
+        btnClearHistory.onclick = () => { historyEntries = []; saveHistory(); renderHistory(); };
+        searchEngineSelect.onchange = (e) => { settings.searchEngine = e.target.value; saveSettings(); };
+        fontSizeSelect.onchange = (e) => { settings.fontSize = e.target.value; saveSettings(); applyTheme(); };
+        themeSelect.onchange = (e) => { settings.theme = e.target.value; saveSettings(); applyTheme(); };
 
-        // --- SAAT GÜNCELLEME ---
-        function updateClock() {
-            const now = new Date();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock').innerText = `${h}:${m}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+        menuItems.forEach(i => i.onclick = () => showScreen(i.getAttribute('data-target')));
 
-        // --- EKRAN YÖNETİMİ ---
-        function navigateTo(view) {
-            state.history.push(state.currentView);
-            state.currentView = view;
-            state.selectedIndex = 0;
-            render();
-        }
+        renderScreen('home');
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+      }
 
-        function goBack() {
-            if (state.history.length > 0) {
-                state.currentView = state.history.pop();
-                state.selectedIndex = 0;
-                render();
-            }
-        }
-
-        // --- MOUSE & DOKUNMATİK TIKLAMA DESTEĞİ ---
-        function setSelectedIndex(index) {
-            state.selectedIndex = index;
-            updateSelection();
-        }
-
-        function handleItemClick(index, actionFn) {
-            state.selectedIndex = index;
-            updateSelection();
-            if (typeof actionFn === 'function') {
-                actionFn();
-            }
-        }
-
-        // --- RENDER MOTORU ---
-        function render() {
-            const content = document.getElementById('content');
-            const title = document.getElementById('app-title');
-            content.innerHTML = '';
-
-            if (state.currentView === 'main') {
-                title.innerText = 'MicroOS v5.0';
-                mainMenu.forEach((item, index) => {
-                    const div = document.createElement('div');
-                    div.className = `menu-item ${index === state.selectedIndex ? 'active' : ''}`;
-                    div.innerText = item.label;
-                    div.onclick = () => handleItemClick(index, () => navigateTo(item.id));
-                    content.appendChild(div);
-                });
-            } 
-            else if (state.currentView === 'wallpaper') {
-                title.innerText = 'Duvar Kağıdı';
-                content.innerHTML = `
-                    <div class="card">
-                        <div style="font-size:8px;">Kategori Seç:</div>
-                        <select id="wp-cat">
-                            <option value="pixel">Piksel Art</option>
-                            <option value="nature">Doğa</option>
-                            <option value="city">Şehir</option>
-                            <option value="space">Uzay</option>
-                        </select>
-                        <button id="btn-fetch-wp" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">🔍 Resim Getir</button>
-                    </div>
-                    <div id="wp-result" class="card hidden">
-                        <img id="wp-img" class="wallpaper-img" src="" alt="WP">
-                        <button id="btn-dl-wp" class="menu-item ${state.selectedIndex === 1 ? 'active' : ''}">📥 İndir (128x160)</button>
-                    </div>
-                `;
-                document.getElementById('btn-fetch-wp').onclick = () => {
-                    setSelectedIndex(0);
-                    fetchWallpapers();
-                };
-            }
-            else if (state.currentView === 'weather') {
-                title.innerText = 'Hava Durumu';
-                content.innerHTML = `
-                    <div class="card">
-                        <input type="text" id="city-input" value="${state.city}" placeholder="Şehir yaz...">
-                        <button id="btn-search-weather" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Sorgula</button>
-                    </div>
-                    <div id="weather-info" class="card">Yükleniyor...</div>
-                `;
-                fetchWeather(state.city);
-                document.getElementById('btn-search-weather').onclick = () => {
-                    setSelectedIndex(0);
-                    const val = document.getElementById('city-input').value;
-                    if(val) { state.city = val; fetchWeather(val); }
-                };
-            }
-            else if (state.currentView === 'sports') {
-                title.innerText = 'Süper Lig Skor';
-                content.innerHTML = `<div id="sports-info" class="card">Skorlar yükleniyor...</div>`;
-                fetchSports();
-            }
-            else if (state.currentView === 'music') {
-                title.innerText = 'Müzik & Radyo';
-                content.innerHTML = `
-                    <div class="card">
-                        <input type="text" id="music-input" placeholder="Şarkı/Sanatçı...">
-                        <button id="btn-search-music" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Ara & Dinle</button>
-                    </div>
-                    <div id="music-results" class="card">Radyo Kanalları:</div>
-                    <div class="menu-item ${state.selectedIndex === 1 ? 'active' : ''}" onclick="handleItemClick(1, () => playRadio('https://listen.powerapp.com.tr/powerturk/mpeg/icecast.audio'))">📻 PowerTürk FM</div>
-                    <div class="menu-item ${state.selectedIndex === 2 ? 'active' : ''}" onclick="handleItemClick(2, () => playRadio('https://radiotr.oyuncutayfa.com/slowturk'))">📻 SlowTürk FM</div>
-                    <audio id="audio-player" controls style="width:100%; margin-top:4px; height:20px;"></audio>
-                `;
-                document.getElementById('btn-search-music').onclick = () => {
-                    setSelectedIndex(0);
-                    searchMusic();
-                };
-            }
-            else if (state.currentView === 'ai') {
-                title.innerText = 'Yapay Zeka';
-                content.innerHTML = `
-                    <div class="card">
-                        <input type="text" id="ai-input" placeholder="Soru sor...">
-                        <button id="btn-send-ai" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Gönder</button>
-                    </div>
-                    <div id="ai-response" class="card" style="font-size:8px;">Sorunuzu yazıp 'Gönder'e basın.</div>
-                `;
-                document.getElementById('btn-send-ai').onclick = () => {
-                    setSelectedIndex(0);
-                    askAI();
-                };
-            }
-            else if (state.currentView === 'news') {
-                title.innerText = 'Son Haberler';
-                content.innerHTML = `<div id="news-list">Haberler çekiliyor...</div>`;
-                fetchNews();
-            }
-            else if (state.currentView === 'finance') {
-                title.innerText = 'Döviz & Altın';
-                content.innerHTML = `<div id="finance-info" class="card">Kurlar yükleniyor...</div>`;
-                fetchFinance();
-            }
-            else if (state.currentView === 'namaz') {
-                title.innerText = 'Namaz Vakitleri';
-                content.innerHTML = `<div id="namaz-info" class="card">Yükleniyor...</div>`;
-                fetchNamaz();
-            }
-            else if (state.currentView === 'contacts') {
-                title.innerText = 'Rehber';
-                content.innerHTML = `
-                    <div class="card">
-                        <input type="text" id="c-name" placeholder="İsim">
-                        <input type="text" id="c-phone" placeholder="Telefon">
-                        <button id="btn-add-contact" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Ekle</button>
-                    </div>
-                    <div id="contacts-list"></div>
-                `;
-                renderContacts();
-                document.getElementById('btn-add-contact').onclick = () => {
-                    setSelectedIndex(0);
-                    addContact();
-                };
-            }
-            else if (state.currentView === 'emergency') {
-                title.innerText = 'Acil Numaralar';
-                content.innerHTML = `
-                    <div class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}" onclick="handleItemClick(0, () => location.href='tel:112')">🚨 112 Acil Çağrı</div>
-                    <div class="menu-item ${state.selectedIndex === 1 ? 'active' : ''}" onclick="handleItemClick(1, () => location.href='tel:155')">👮 155 Polis İmdat</div>
-                    <div class="menu-item ${state.selectedIndex === 2 ? 'active' : ''}" onclick="handleItemClick(2, () => location.href='tel:110')">🚒 110 İtfaiye</div>
-                    <div class="menu-item ${state.selectedIndex === 3 ? 'active' : ''}" onclick="handleItemClick(3, () => location.href='tel:122')">🏕️ 122 AFAD</div>
-                `;
-            }
-            else if (state.currentView === 'settings') {
-                title.innerText = 'Ayarlar';
-                content.innerHTML = `
-                    <div class="card">
-                        <div style="font-size:8px;">Renk Teması:</div>
-                        <select id="theme-select">
-                            <option value="theme-matrix">Matrix Yeşil</option>
-                            <option value="theme-amber">Kehribar</option>
-                            <option value="theme-cyber">Cyberpunk</option>
-                            <option value="theme-blue">Gece Mavisi</option>
-                            <option value="theme-contrast">Yüksek Kontrast</option>
-                            <option value="theme-gameboy">GameBoy</option>
-                            <option value="theme-oled">OLED Siyah</option>
-                            <option value="theme-classic">Klasik Mavi</option>
-                        </select>
-                        <button id="btn-apply-settings" class="menu-item ${state.selectedIndex === 0 ? 'active' : ''}">Uygula</button>
-                    </div>
-                `;
-                document.getElementById('theme-select').value = state.theme;
-                document.getElementById('btn-apply-settings').onclick = () => {
-                    setSelectedIndex(0);
-                    applySettings();
-                };
-            }
-            else {
-                content.innerHTML = `<div class="card">${state.currentView} modülü aktif.</div>`;
-            }
-
-            updateSelection();
-        }
-
-        function updateSelection() {
-            const items = document.querySelectorAll('.menu-item');
-            items.forEach((item, index) => {
-                if (index === state.selectedIndex) {
-                    item.classList.add('active');
-                    item.scrollIntoView({ block: 'nearest' });
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-        }
-
-        // --- API SERVİSLERİ ---
-
-        // 1. DUVAR KAĞIDI ÇEKME
-        function fetchWallpapers() {
-            const cat = document.getElementById('wp-cat').value;
-            const imgUrl = `https://picsum.photos/128/160?random=${Math.floor(Math.random()*1000)}`;
-            const resCard = document.getElementById('wp-result');
-            const imgElem = document.getElementById('wp-img');
-            
-            imgElem.src = imgUrl;
-            resCard.classList.remove('hidden');
-            
-            document.getElementById('btn-dl-wp').onclick = () => {
-                setSelectedIndex(1);
-                window.open(imgUrl, '_blank');
-            };
-        }
-
-        // 2. HAVA DURUMU (Open-Meteo)
-        function fetchWeather(cityName) {
-            const info = document.getElementById('weather-info');
-            fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=tr&format=json`)
-                .then(r => r.json())
-                .then(d => {
-                    if (d.results && d.results[0]) {
-                        const { latitude, longitude, name } = d.results[0];
-                        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`)
-                            .then(r => r.json())
-                            .then(w => {
-                                const t = w.current_weather.temperature;
-                                const ws = w.current_weather.windspeed;
-                                info.innerHTML = `<b>${name}</b><br>Sıcaklık: ${t}°C<br>Rüzgar: ${ws}km/h`;
-                            });
-                    } else {
-                        info.innerText = 'Şehir bulunamadı.';
-                    }
-                }).catch(() => info.innerText = 'Hata oluştu.');
-        }
-
-        // 3. CANLI SKOR & SÜPER LİG
-        function fetchSports() {
-            const info = document.getElementById('sports-info');
-            info.innerHTML = `
-                <b>Süper Lig Puan Durumu</b><br>
-                1. Galatasaray - 24p<br>
-                2. Fenerbahçe - 22p<br>
-                3. Beşiktaş - 20p<br>
-                4. Samsunspor - 19p<br>
-                <hr>
-                <b>Son Maçlar:</b><br>
-                GS 2 - 1 BJK (MS)<br>
-                FB 3 - 1 TS (MS)
-            `;
-        }
-
-        // 4. MÜZİK ARAMA & RADYO
-        function searchMusic() {
-            const q = document.getElementById('music-input').value;
-            const res = document.getElementById('music-results');
-            if(!q) return;
-            res.innerHTML = `Aranıyor: ${q}...`;
-            fetch(`https://archive.org/advancedsearch.php?q=${encodeURIComponent(q)}+AND+mediatype:audio&fl[]=identifier,title&rows=3&output=json`)
-                .then(r => r.json())
-                .then(d => {
-                    const docs = d.response.docs;
-                    if(docs.length > 0) {
-                        res.innerHTML = 'Sonuçlar (Tıkla Oynat):';
-                        docs.forEach(doc => {
-                            const div = document.createElement('div');
-                            div.className = 'menu-item';
-                            div.innerText = '▶ ' + doc.title.substring(0, 15);
-                            div.onclick = () => {
-                                const audio = document.getElementById('audio-player');
-                                audio.src = `https://archive.org/download/${doc.identifier}`;
-                                audio.play();
-                            };
-                            res.appendChild(div);
-                        });
-                    } else {
-                        res.innerText = 'Müzik bulunamadı.';
-                    }
-                });
-        }
-
-        function playRadio(url) {
-            const audio = document.getElementById('audio-player');
-            audio.src = url;
-            audio.play();
-        }
-
-        // 5. YAPAY ZEKA (Pollinations AI)
-        function askAI() {
-            const q = document.getElementById('ai-input').value;
-            const res = document.getElementById('ai-response');
-            if(!q) return;
-            res.innerText = 'Düşünüyor...';
-            fetch(`https://text.pollinations.ai/${encodeURIComponent(q)}?model=mistral`)
-                .then(r => r.text())
-                .then(t => {
-                    res.innerText = t.substring(0, 150) + '...';
-                }).catch(() => res.innerText = 'AI Yanıt vermedi.');
-        }
-
-        // 6. SON HABERLER
-        function fetchNews() {
-            const list = document.getElementById('news-list');
-            fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.trthaber.com%2Fsondakika_articles.rss')
-                .then(r => r.json())
-                .then(d => {
-                    list.innerHTML = '';
-                    d.items.slice(0, 5).forEach((item, i) => {
-                        const div = document.createElement('div');
-                        div.className = 'card';
-                        div.style.fontSize = '8px';
-                        div.innerHTML = `<b>${i+1}.</b> ${item.title.substring(0,40)}...`;
-                        list.appendChild(div);
-                    });
-                });
-        }
-
-        // 7. DÖVİZ KURLARI
-        function fetchFinance() {
-            const info = document.getElementById('finance-info');
-            fetch('https://api.frankfurter.app/latest?from=USD&to=TRY,EUR')
-                .then(r => r.json())
-                .then(d => {
-                    info.innerHTML = `
-                        <b>Canlı Kurlar:</b><br>
-                        1 USD = ${d.rates.TRY} TL<br>
-                        1 EUR = ${(d.rates.TRY / d.rates.EUR).toFixed(2)} TL
-                    `;
-                });
-        }
-
-        // 8. NAMAZ VAKİTLERİ
-        function fetchNamaz() {
-            const info = document.getElementById('namaz-info');
-            fetch('https://api.aladhan.com/v1/timingsByCity?city=Istanbul&country=Turkey&method=13')
-                .then(r => r.json())
-                .then(d => {
-                    const t = d.data.timings;
-                    info.innerHTML = `
-                        <b>İstanbul Vakitleri:</b><br>
-                        İmsak: ${t.Imsak}<br>
-                        Güneş: ${t.Sunrise}<br>
-                        Öğle: ${t.Dhuhr}<br>
-                        İkindi: ${t.Asr}<br>
-                        Akşam: ${t.Maghrib}<br>
-                        Yatsı: ${t.Isha}
-                    `;
-                });
-        }
-
-        // 9. REHBER KONTROLÜ
-        function renderContacts() {
-            const list = document.getElementById('contacts-list');
-            const contacts = JSON.parse(localStorage.getItem('micro_contacts') || '[]');
-            list.innerHTML = '';
-            contacts.forEach((c, idx) => {
-                const div = document.createElement('div');
-                div.className = `menu-item ${idx + 1 === state.selectedIndex ? 'active' : ''}`;
-                div.innerText = `📞 ${c.name}: ${c.phone}`;
-                div.onclick = () => handleItemClick(idx + 1, () => location.href = `tel:${c.phone}`);
-                list.appendChild(div);
-            });
-        }
-
-        function addContact() {
-            const name = document.getElementById('c-name').value;
-            const phone = document.getElementById('c-phone').value;
-            if(name && phone) {
-                const contacts = JSON.parse(localStorage.getItem('micro_contacts') || '[]');
-                contacts.push({name, phone});
-                localStorage.setItem('micro_contacts', JSON.stringify(contacts));
-                renderContacts();
-            }
-        }
-
-        // 10. AYARLARI UYGULA
-        function applySettings() {
-            const t = document.getElementById('theme-select').value;
-            document.body.className = t;
-            state.theme = t;
-            alert('Tema Değiştirildi!');
-        }
-
-        // --- TUŞ TAKIMI / KEYBOARD KONTROLÜ ---
-        document.addEventListener('keydown', (e) => {
-            const items = document.querySelectorAll('.menu-item');
-            const maxIndex = items.length - 1;
-
-            if (e.key === 'ArrowDown' || e.key === '8') {
-                if (state.selectedIndex < maxIndex) state.selectedIndex++;
-                updateSelection();
-            } 
-            else if (e.key === 'ArrowUp' || e.key === '2') {
-                if (state.selectedIndex > 0) state.selectedIndex--;
-                updateSelection();
-            } 
-            else if (e.key === 'Enter' || e.key === '5') {
-                if (items[state.selectedIndex]) {
-                    items[state.selectedIndex].click();
-                }
-            } 
-            else if (e.key === 'Backspace' || e.key === '0' || e.key === 'c' || e.key === 'C') {
-                e.preventDefault();
-                goBack();
-            }
-        });
-
-        // İLK BAŞLATMA
-        render();
-    </script>
+      init();
+    })();
+  </script>
 </body>
 </html>
