@@ -7,55 +7,60 @@
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; max-width: 100%; }
     
-    :root {
-      --bg: #f2f4f7;
-      --panel: #ffffff;
-      --text: #111827;
-      --muted: #6b7280;
+    :root, :root.theme-day {
+      --bg: #ffffff;
+      --panel: #f0f4f8;
+      --text: #1a202c;
+      --muted: #64748b;
       --accent: #2563eb;
       --accent-contrast: #ffffff;
-      --nav-bg: rgba(0,0,0,0.06);
+      --border: #cbd5e1;
+      --nav-bg: #e2e8f0;
       --font-size: 8px;
     }
 
     :root.theme-dark {
-      --bg: #0b1220;
-      --panel: #07101a;
-      --text: #e6eef8;
-      --muted: #9aa9bf;
-      --accent: #60a5fa;
-      --accent-contrast: #07101a;
-      --nav-bg: rgba(255,255,255,0.06);
+      --bg: #000000;
+      --panel: #121212;
+      --text: #ffffff;
+      --muted: #888888;
+      --accent: #ffffff;
+      --accent-contrast: #000000;
+      --border: #333333;
+      --nav-bg: #1e1e1e;
     }
 
     :root.theme-matrix {
       --bg: #000000;
-      --panel: #001100;
+      --panel: #051405;
       --text: #00ff66;
-      --muted: #00aa44;
+      --muted: #008833;
       --accent: #00ff66;
       --accent-contrast: #000000;
-      --nav-bg: rgba(0, 255, 102, 0.1);
+      --border: #004411;
+      --nav-bg: #0a290a;
     }
 
     :root.theme-amber {
-      --bg: #1a0f00;
-      --panel: #2b1800;
+      --bg: #120a00;
+      --panel: #241400;
       --text: #ffb000;
-      --muted: #aa7700;
+      --muted: #996600;
       --accent: #ffb000;
-      --accent-contrast: #000000;
-      --nav-bg: rgba(255, 176, 0, 0.1);
+      --accent-contrast: #120a00;
+      --border: #4d3300;
+      --nav-bg: #382000;
     }
 
-    :root.theme-blue {
-      --bg: #000d1a;
-      --panel: #001a33;
-      --text: #80c0ff;
-      --muted: #0066cc;
-      --accent: #3399ff;
+    :root.theme-blue, :root.theme-cyber {
+      --bg: #0f051d;
+      --panel: #1b0a33;
+      --text: #00ffff;
+      --muted: #a855f7;
+      --accent: #ff007f;
       --accent-contrast: #ffffff;
-      --nav-bg: rgba(51, 153, 255, 0.1);
+      --border: #4c1d95;
+      --nav-bg: #2e1065;
     }
 
     :root.theme-gameboy {
@@ -65,7 +70,8 @@
       --muted: #306230;
       --accent: #0f380f;
       --accent-contrast: #9bbc0f;
-      --nav-bg: rgba(15, 56, 15, 0.1);
+      --border: #306230;
+      --nav-bg: #8bac0f;
     }
 
     html, body {
@@ -85,7 +91,7 @@
       width: 128px;
       height: 160px;
       margin: 0 auto;
-      background: var(--panel);
+      background: var(--bg);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -96,7 +102,7 @@
     .topbar {
       padding: 2px 4px;
       background: var(--nav-bg);
-      border-bottom: 1px solid rgba(0,0,0,0.1);
+      border-bottom: 1px solid var(--border);
       flex: 0 0 auto;
     }
 
@@ -122,13 +128,15 @@
       margin: 1px 0 4px 0;
       text-align: center;
       font-weight: bold;
+      color: var(--accent);
     }
 
     .screen h2 {
       font-size: 9px;
       margin: 2px 0 4px 0;
       text-align: center;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
     }
 
     .search-wrap {
@@ -142,9 +150,9 @@
       min-width: 0;
       padding: 3px;
       border-radius: 3px;
-      border: 1px solid var(--muted);
+      border: 1px solid var(--border);
       font-size: 8px;
-      background: transparent;
+      background: var(--panel);
       color: var(--text);
       outline: none;
     }
@@ -152,7 +160,7 @@
     .btn {
       background: var(--accent);
       color: var(--accent-contrast);
-      border: none;
+      border: 1px solid var(--border);
       padding: 3px 4px;
       border-radius: 3px;
       font-size: 8px;
@@ -166,16 +174,25 @@
       margin-top: 3px;
     }
 
+    .sd-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 5px;
+      font-size: 7px;
+      font-weight: bold;
+    }
+
     .speed-dial {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 3px;
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
     .sd-item {
-      background: var(--nav-bg);
-      border: 1px solid var(--muted);
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 3px;
       padding: 3px;
       text-align: center;
@@ -204,8 +221,8 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      background: var(--nav-bg);
-      border: 1px solid transparent;
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 3px;
       padding: 3px;
       margin-bottom: 2px;
@@ -236,7 +253,7 @@
     }
 
     .menu-item:focus .num, .menu-item:hover .num {
-      background: var(--panel);
+      background: var(--bg);
       color: var(--text);
     }
 
@@ -252,10 +269,11 @@
       padding: 3px;
       border-radius: 3px;
       margin-bottom: 3px;
-      background: var(--nav-bg);
+      background: var(--panel);
       font-size: 7px;
       gap: 2px;
-      border: 1px solid var(--muted);
+      border: 1px solid var(--border);
+      color: var(--text);
     }
 
     .list li a {
@@ -291,7 +309,7 @@
     .fav-form input, select {
       padding: 2px;
       border-radius: 3px;
-      border: 1px solid var(--muted);
+      border: 1px solid var(--border);
       font-size: 8px;
       background: var(--panel);
       color: var(--text);
@@ -311,18 +329,18 @@
     }
 
     .about {
-      background: var(--nav-bg);
+      background: var(--panel);
       padding: 3px;
       border-radius: 3px;
       font-size: 7px;
       color: var(--muted);
       line-height: 1.1;
-      border: 1px solid var(--muted);
+      border: 1px solid var(--border);
     }
 
     .softkey-bar {
       padding: 2px 4px;
-      border-top: 1px solid rgba(0,0,0,0.1);
+      border-top: 1px solid var(--border);
       background: var(--nav-bg);
       flex: 0 0 auto;
       display: flex;
@@ -369,7 +387,17 @@
       </div>
 
       <!-- Dinamik Hızlı Erişim -->
+      <div class="sd-header">
+        <span>Hızlı Erişim</span>
+        <button id="btn-manage-sd" class="btn" style="font-size:6px; padding:1px 3px;">Düzenle</button>
+      </div>
       <div id="speed-dial" class="speed-dial"></div>
+    </main>
+
+    <!-- HIZLI ERİŞİM DÜZENLEME EKRANI -->
+    <main class="screen hidden" id="screen-sd-manage" data-screen="sd-manage">
+      <h2>Hızlı Erişim Düzenle</h2>
+      <ul id="sd-manage-list" class="list"></ul>
     </main>
 
     <!-- MENU -->
@@ -438,8 +466,8 @@
 
       <div class="setting-row">
         <div class="about">
-          <strong>MicroBrowser v3.4</strong> (128x160)<br>
-          Dinamik Hızlı Erişim Destekli
+          <strong>MicroBrowser v3.5</strong> (128x160)<br>
+          Düzenlenebilir Hızlı Erişim
         </div>
       </div>
     </main>
@@ -450,7 +478,7 @@
       <div style="font-size:7px; line-height:1.2;">
         • <strong>Arama:</strong> Kelime veya URL yazın.<br>
         • <strong>Navigasyon:</strong> Sol Tuş (Menu), Sağ Tuş / 0 (Geri).<br>
-        • <strong>Hızlı Erişim:</strong> Favorilerdeki bir siteyi 'Hızlıya Ekle' butonuyla ana ekrana taşıyabilirsiniz.
+        • <strong>Hızlı Erişim:</strong> Favorilerden ekleyebilir veya 'Düzenle'ye basarak silebilirsiniz.
       </div>
     </main>
 
@@ -469,7 +497,8 @@
         favorites: document.getElementById('screen-favorites'),
         history: document.getElementById('screen-history'),
         settings: document.getElementById('screen-settings'),
-        help: document.getElementById('screen-help')
+        help: document.getElementById('screen-help'),
+        'sd-manage': document.getElementById('screen-sd-manage')
       };
 
       const btnLsk = document.getElementById('btn-lsk');
@@ -479,6 +508,8 @@
       const favoritesList = document.getElementById('favorites-list');
       const historyList = document.getElementById('history-list');
       const speedDialEl = document.getElementById('speed-dial');
+      const sdManageList = document.getElementById('sd-manage-list');
+      const btnManageSd = document.getElementById('btn-manage-sd');
       const favTitleInput = document.getElementById('fav-title');
       const favUrlInput = document.getElementById('fav-url');
       const btnSaveFav = document.getElementById('btn-save-fav');
@@ -493,10 +524,10 @@
       let favorites = [];
       let historyEntries = [];
       let speedDial = [
-        { title: '1. Vikipedi', url: 'https://m.wikipedia.org' },
-        { title: '2. Ekşi', url: 'https://eksisozluk.com' },
-        { title: '3. YouTube', url: 'https://m.youtube.com' },
-        { title: '4. DDG Lite', url: 'https://lite.duckduckgo.com/lite/' }
+        { title: 'Vikipedi', url: 'https://m.wikipedia.org' },
+        { title: 'Ekşi', url: 'https://eksisozluk.com' },
+        { title: 'YouTube', url: 'https://m.youtube.com' },
+        { title: 'DDG Lite', url: 'https://lite.duckduckgo.com/lite/' }
       ];
 
       let settings = {
@@ -507,19 +538,19 @@
 
       const navStack = [];
 
-      function saveFavorites() { try { localStorage.setItem('mb_fav_v4', JSON.stringify(favorites)); } catch (e) {} }
-      function saveHistory() { try { localStorage.setItem('mb_hist_v4', JSON.stringify(historyEntries)); } catch (e) {} }
-      function saveSpeedDial() { try { localStorage.setItem('mb_sd_v4', JSON.stringify(speedDial)); } catch (e) {} }
-      function saveSettings() { try { localStorage.setItem('mb_set_v4', JSON.stringify(settings)); } catch (e) {} }
+      function saveFavorites() { try { localStorage.setItem('mb_fav_v5', JSON.stringify(favorites)); } catch (e) {} }
+      function saveHistory() { try { localStorage.setItem('mb_hist_v5', JSON.stringify(historyEntries)); } catch (e) {} }
+      function saveSpeedDial() { try { localStorage.setItem('mb_sd_v5', JSON.stringify(speedDial)); } catch (e) {} }
+      function saveSettings() { try { localStorage.setItem('mb_set_v5', JSON.stringify(settings)); } catch (e) {} }
 
       function loadAll() {
-        try { favorites = JSON.parse(localStorage.getItem('mb_fav_v4') || '[]'); } catch (e) {}
-        try { historyEntries = JSON.parse(localStorage.getItem('mb_hist_v4') || '[]'); } catch (e) {}
+        try { favorites = JSON.parse(localStorage.getItem('mb_fav_v5') || '[]'); } catch (e) {}
+        try { historyEntries = JSON.parse(localStorage.getItem('mb_hist_v5') || '[]'); } catch (e) {}
         try {
-          const sd = JSON.parse(localStorage.getItem('mb_sd_v4'));
+          const sd = JSON.parse(localStorage.getItem('mb_sd_v5'));
           if (sd && Array.isArray(sd)) speedDial = sd;
         } catch (e) {}
-        try { Object.assign(settings, JSON.parse(localStorage.getItem('mb_set_v4') || '{}')); } catch (e) {}
+        try { Object.assign(settings, JSON.parse(localStorage.getItem('mb_set_v5') || '{}')); } catch (e) {}
       }
 
       window.openUrl = function(url) {
@@ -529,12 +560,36 @@
 
       function renderSpeedDial() {
         speedDialEl.innerHTML = '';
-        speedDial.slice(0, 6).forEach((item, idx) => {
+        speedDial.slice(0, 6).forEach((item) => {
           const div = document.createElement('div');
           div.className = 'sd-item';
-          div.innerText = `${idx + 1}. ${item.title}`;
+          div.innerText = item.title;
           div.onclick = () => openUrl(item.url);
           speedDialEl.appendChild(div);
+        });
+      }
+
+      function renderSdManage() {
+        sdManageList.innerHTML = '';
+        if (!speedDial.length) {
+          sdManageList.innerHTML = '<li style="font-size:7px; color:var(--muted);">Kayıtlı bağlantı yok.</li>';
+          return;
+        }
+        speedDial.forEach((item, idx) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <div><strong>${item.title}</strong></div>
+            <div class="list-btns">
+              <button class="btn del-btn" style="background:var(--muted);">Kaldır</button>
+            </div>
+          `;
+          li.querySelector('.del-btn').onclick = () => {
+            speedDial.splice(idx, 1);
+            saveSpeedDial();
+            renderSpeedDial();
+            renderSdManage();
+          };
+          sdManageList.appendChild(li);
         });
       }
 
@@ -664,6 +719,11 @@
         btnRsk.onclick = goBack;
         btnGo.onclick = () => performSearch(searchInput.value);
         searchInput.onkeydown = (e) => { if (e.key === 'Enter') performSearch(searchInput.value); };
+
+        btnManageSd.onclick = () => {
+          renderSdManage();
+          showScreen('sd-manage');
+        };
 
         btnSaveFav.onclick = () => {
           if (favTitleInput.value && favUrlInput.value) {
