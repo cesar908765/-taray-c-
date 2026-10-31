@@ -3,11 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=128, height=160, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>StartPage Browser 128x160 Themes</title>
+  <title>MicroBrowser 128x160</title>
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; max-width: 100%; }
     
-    /* TEMA TANIMLARI */
     :root {
       --bg: #f2f4f7;
       --panel: #ffffff;
@@ -273,12 +272,13 @@
       display: flex;
       gap: 2px;
       margin-top: 1px;
+      flex-wrap: wrap;
     }
 
     .list-btns .btn {
       flex: 1;
-      font-size: 7px;
-      padding: 2px;
+      font-size: 6px;
+      padding: 2px 1px;
     }
 
     .fav-form {
@@ -361,20 +361,15 @@
 
     <!-- HOME -->
     <main class="screen" id="screen-home" data-screen="home">
-      <h1 class="app-title">StartPage Lite</h1>
+      <h1 class="app-title">MicroBrowser</h1>
 
       <div class="search-wrap">
         <input id="search-input" class="search-input" type="search" placeholder="Ara veya URL..." />
         <button id="btn-go" class="btn">Ara</button>
       </div>
 
-      <!-- Hızlı Erişim -->
-      <div class="speed-dial">
-        <div class="sd-item" onclick="openUrl('https://m.wikipedia.org')">1. Vikipedi</div>
-        <div class="sd-item" onclick="openUrl('https://eksisozluk.com')">2. Ekşi</div>
-        <div class="sd-item" onclick="openUrl('https://m.youtube.com')">3. YouTube</div>
-        <div class="sd-item" onclick="openUrl('https://lite.duckduckgo.com/lite/')">4. DDG Lite</div>
-      </div>
+      <!-- Dinamik Hızlı Erişim -->
+      <div id="speed-dial" class="speed-dial"></div>
     </main>
 
     <!-- MENU -->
@@ -443,8 +438,8 @@
 
       <div class="setting-row">
         <div class="about">
-          <strong>StartPage v3.3</strong> (128x160)<br>
-          Gelişmiş Tema Destekli
+          <strong>MicroBrowser v3.4</strong> (128x160)<br>
+          Dinamik Hızlı Erişim Destekli
         </div>
       </div>
     </main>
@@ -455,7 +450,7 @@
       <div style="font-size:7px; line-height:1.2;">
         • <strong>Arama:</strong> Kelime veya URL yazın.<br>
         • <strong>Navigasyon:</strong> Sol Tuş (Menu), Sağ Tuş / 0 (Geri).<br>
-        • <strong>Temalar:</strong> Ayarlar ekranından 6 farklı renk seçeneğini değiştirebilirsiniz.
+        • <strong>Hızlı Erişim:</strong> Favorilerdeki bir siteyi 'Hızlıya Ekle' butonuyla ana ekrana taşıyabilirsiniz.
       </div>
     </main>
 
@@ -483,6 +478,7 @@
       const searchInput = document.getElementById('search-input');
       const favoritesList = document.getElementById('favorites-list');
       const historyList = document.getElementById('history-list');
+      const speedDialEl = document.getElementById('speed-dial');
       const favTitleInput = document.getElementById('fav-title');
       const favUrlInput = document.getElementById('fav-url');
       const btnSaveFav = document.getElementById('btn-save-fav');
@@ -496,6 +492,13 @@
 
       let favorites = [];
       let historyEntries = [];
+      let speedDial = [
+        { title: '1. Vikipedi', url: 'https://m.wikipedia.org' },
+        { title: '2. Ekşi', url: 'https://eksisozluk.com' },
+        { title: '3. YouTube', url: 'https://m.youtube.com' },
+        { title: '4. DDG Lite', url: 'https://lite.duckduckgo.com/lite/' }
+      ];
+
       let settings = {
         searchEngine: 'https://www.bing.com/search?q=',
         theme: 'theme-day',
@@ -504,20 +507,36 @@
 
       const navStack = [];
 
-      function saveFavorites() { try { localStorage.setItem('sp_fav_v3', JSON.stringify(favorites)); } catch (e) {} }
-      function saveHistory() { try { localStorage.setItem('sp_hist_v3', JSON.stringify(historyEntries)); } catch (e) {} }
-      function saveSettings() { try { localStorage.setItem('sp_set_v3', JSON.stringify(settings)); } catch (e) {} }
+      function saveFavorites() { try { localStorage.setItem('mb_fav_v4', JSON.stringify(favorites)); } catch (e) {} }
+      function saveHistory() { try { localStorage.setItem('mb_hist_v4', JSON.stringify(historyEntries)); } catch (e) {} }
+      function saveSpeedDial() { try { localStorage.setItem('mb_sd_v4', JSON.stringify(speedDial)); } catch (e) {} }
+      function saveSettings() { try { localStorage.setItem('mb_set_v4', JSON.stringify(settings)); } catch (e) {} }
 
       function loadAll() {
-        try { favorites = JSON.parse(localStorage.getItem('sp_fav_v3') || '[]'); } catch (e) {}
-        try { historyEntries = JSON.parse(localStorage.getItem('sp_hist_v3') || '[]'); } catch (e) {}
-        try { Object.assign(settings, JSON.parse(localStorage.getItem('sp_set_v3') || '{}')); } catch (e) {}
+        try { favorites = JSON.parse(localStorage.getItem('mb_fav_v4') || '[]'); } catch (e) {}
+        try { historyEntries = JSON.parse(localStorage.getItem('mb_hist_v4') || '[]'); } catch (e) {}
+        try {
+          const sd = JSON.parse(localStorage.getItem('mb_sd_v4'));
+          if (sd && Array.isArray(sd)) speedDial = sd;
+        } catch (e) {}
+        try { Object.assign(settings, JSON.parse(localStorage.getItem('mb_set_v4') || '{}')); } catch (e) {}
       }
 
       window.openUrl = function(url) {
         window.open(url, '_blank');
         addHistory(url, url);
       };
+
+      function renderSpeedDial() {
+        speedDialEl.innerHTML = '';
+        speedDial.slice(0, 6).forEach((item, idx) => {
+          const div = document.createElement('div');
+          div.className = 'sd-item';
+          div.innerText = `${idx + 1}. ${item.title}`;
+          div.onclick = () => openUrl(item.url);
+          speedDialEl.appendChild(div);
+        });
+      }
 
       function renderFavorites() {
         favoritesList.innerHTML = '';
@@ -530,15 +549,24 @@
           li.innerHTML = `
             <a href="${f.url}" target="_blank">${f.title || f.url}</a>
             <div class="list-btns">
-              <button class="btn" onclick="openUrl('${f.url}')">Aç</button>
+              <button class="btn open-btn">Aç</button>
+              <button class="btn sd-add-btn">Hızlıya Ekle</button>
               <button class="btn del-btn" style="background:var(--muted);">Sil</button>
             </div>
           `;
-          li.querySelector('.del-btn').addEventListener('click', () => {
+          li.querySelector('.open-btn').onclick = () => openUrl(f.url);
+          li.querySelector('.sd-add-btn').onclick = () => {
+            speedDial.unshift({ title: f.title.substring(0, 10), url: f.url });
+            if (speedDial.length > 6) speedDial.pop();
+            saveSpeedDial();
+            renderSpeedDial();
+            alert('Hızlı Erişime Eklendi!');
+          };
+          li.querySelector('.del-btn').onclick = () => {
             favorites.splice(favorites.indexOf(f), 1);
             saveFavorites();
             renderFavorites();
-          });
+          };
           favoritesList.appendChild(li);
         });
       }
@@ -554,15 +582,16 @@
           li.innerHTML = `
             <a href="${h.url}" target="_blank">${h.title || h.url}</a>
             <div class="list-btns">
-              <button class="btn" onclick="openUrl('${h.url}')">Aç</button>
+              <button class="btn open-btn">Aç</button>
               <button class="btn del-btn" style="background:var(--muted);">Sil</button>
             </div>
           `;
-          li.querySelector('.del-btn').addEventListener('click', () => {
+          li.querySelector('.open-btn').onclick = () => openUrl(h.url);
+          li.querySelector('.del-btn').onclick = () => {
             historyEntries.splice(historyEntries.indexOf(h), 1);
             saveHistory();
             renderHistory();
-          });
+          };
           historyList.appendChild(li);
         });
       }
@@ -627,6 +656,7 @@
         if (settings.theme) themeSelect.value = settings.theme;
         
         applyTheme();
+        renderSpeedDial();
         renderFavorites();
         renderHistory();
 
