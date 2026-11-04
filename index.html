@@ -157,6 +157,11 @@
       outline: none;
     }
 
+    button:focus, input:focus, select:focus, a:focus, .sd-item:focus {
+      outline: 1.5px solid var(--accent) !important;
+      outline-offset: -1px;
+    }
+
     .btn {
       background: var(--accent);
       color: var(--accent-contrast);
@@ -464,10 +469,48 @@
         </select>
       </div>
 
+      <!-- YENİ: TUŞ ATAMALARI AYARLARI -->
+      <div style="border-top:1px dashed var(--border); margin:4px 0; padding-top:2px;">
+        <strong style="font-size:7.5px; color:var(--accent);">Tuş Kısayolları</strong>
+      </div>
+
+      <div class="setting-row">
+        <label># Tuşu Görevi</label>
+        <select id="key-hash-select">
+          <option value="back">Geri Git</option>
+          <option value="reload">Yenile</option>
+          <option value="home">Ana Sayfa</option>
+          <option value="menu">Menü</option>
+          <option value="none">Devre Dışı</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <label>* Tuşu Görevi</label>
+        <select id="key-star-select">
+          <option value="reload">Yenile</option>
+          <option value="back">Geri Git</option>
+          <option value="home">Ana Sayfa</option>
+          <option value="menu">Menü</option>
+          <option value="none">Devre Dışı</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <label>0 Tuşu Görevi</label>
+        <select id="key-zero-select">
+          <option value="home">Ana Sayfa</option>
+          <option value="back">Geri Git</option>
+          <option value="reload">Yenile</option>
+          <option value="menu">Menü</option>
+          <option value="none">Devre Dışı</option>
+        </select>
+      </div>
+
       <div class="setting-row">
         <div class="about">
-          <strong>MicroBrowser v3.5</strong> (128x160)<br>
-          Düzenlenebilir Hızlı Erişim
+          <strong>MicroBrowser v3.7</strong> (128x160)<br>
+          Özelleştirilebilir Tuş Haritası
         </div>
       </div>
     </main>
@@ -477,14 +520,15 @@
       <h2>Yardım</h2>
       <div style="font-size:7px; line-height:1.2;">
         • <strong>Arama:</strong> Kelime veya URL yazın.<br>
-        • <strong>Navigasyon:</strong> Sol Tuş (Menu), Sağ Tuş / 0 (Geri).<br>
-        • <strong>Hızlı Erişim:</strong> Favorilerden ekleyebilir veya 'Düzenle'ye basarak silebilirsiniz.
+        • <strong>Tuş Haritası:</strong> Ayarlar ekranından tuş görevlerini değiştirebilirsiniz.<br>
+        • <strong>Yön Tuşları:</strong> Öğeler arasında gezinme.<br>
+        • <strong>Sol Softkey:</strong> Menü
       </div>
     </main>
 
     <footer class="softkey-bar">
       <button id="btn-lsk" class="softkey">Menu</button>
-      <div class="status" id="status"></div>
+      <div class="status" id="status">Ayarlanabilir Tuşlar</div>
       <button id="btn-rsk" class="softkey">Geri</button>
     </footer>
   </div>
@@ -517,7 +561,9 @@
       const searchEngineSelect = document.getElementById('search-engine');
       const fontSizeSelect = document.getElementById('font-size-select');
       const themeSelect = document.getElementById('theme-select');
-      const statusEl = document.getElementById('status');
+      const keyHashSelect = document.getElementById('key-hash-select');
+      const keyStarSelect = document.getElementById('key-star-select');
+      const keyZeroSelect = document.getElementById('key-zero-select');
       const datetimeEl = document.getElementById('datetime');
       const menuItems = Array.from(document.querySelectorAll('.menu-item'));
 
@@ -533,7 +579,10 @@
       let settings = {
         searchEngine: 'https://www.bing.com/search?q=',
         theme: 'theme-day',
-        fontSize: '8px'
+        fontSize: '8px',
+        keyHash: 'back',   // # Tuş görevi: back, reload, home, menu, none
+        keyStar: 'reload', // * Tuş görevi
+        keyZero: 'home'    // 0 Tuş görevi
       };
 
       const navStack = [];
@@ -563,8 +612,10 @@
         speedDial.slice(0, 6).forEach((item) => {
           const div = document.createElement('div');
           div.className = 'sd-item';
+          div.tabIndex = 0;
           div.innerText = item.title;
           div.onclick = () => openUrl(item.url);
+          div.onkeydown = (e) => { if (e.key === 'Enter') openUrl(item.url); };
           speedDialEl.appendChild(div);
         });
       }
@@ -695,11 +746,76 @@
         datetimeEl.textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       }
 
+      // Aksiyon Tetikleyici (Dinamik Tuşlar İçin)
+      function executeAction(action) {
+        switch (action) {
+          case 'back': goBack(); break;
+          case 'reload': location.reload(); break;
+          case 'home': showScreen('home'); break;
+          case 'menu': showScreen('menu'); break;
+          case 'none': default: break;
+        }
+      }
+
+      // Tuş Takımı Navigasyonu (D-Pad Gezinme Mantığı)
+      function handleFocusNavigation(dir) {
+        const activeScreen = document.querySelector('.screen:not(.hidden)');
+        if (!activeScreen) return;
+        const focusables = Array.from(activeScreen.querySelectorAll('button, input, select, a, .sd-item')).filter(el => el.tabIndex !== -1);
+        if (!focusables.length) return;
+
+        const currentIndex = focusables.indexOf(document.activeElement);
+        let nextIndex = 0;
+
+        if (currentIndex === -1) {
+          nextIndex = 0;
+        } else if (dir === 'down' || dir === 'right') {
+          nextIndex = (currentIndex + 1) % focusables.length;
+        } else if (dir === 'up' || dir === 'left') {
+          nextIndex = (currentIndex - 1 + focusables.length) % focusables.length;
+        }
+        focusables[nextIndex]?.focus();
+      }
+
       document.addEventListener('keydown', (e) => {
         const isInput = ['INPUT', 'SELECT'].includes(e.target.tagName);
+
+        // Dinamik # Tuşu Kontrolü
+        if ((e.key === '#' || (e.code === 'Digit3' && e.shiftKey)) && !isInput) {
+          e.preventDefault();
+          executeAction(settings.keyHash);
+          return;
+        }
+
+        // Dinamik * Tuşu Kontrolü
+        if ((e.key === '*' || (e.code === 'Digit8' && e.shiftKey)) && !isInput) {
+          e.preventDefault();
+          executeAction(settings.keyStar);
+          return;
+        }
+
+        // Dinamik 0 Tuşu Kontrolü
+        if (e.key === '0' && !isInput) {
+          e.preventDefault();
+          executeAction(settings.keyZero);
+          return;
+        }
+
+        // D-Pad Yön Tuşları ile Gezinme
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) && !isInput) {
+          e.preventDefault();
+          if (e.key === 'ArrowUp') handleFocusNavigation('up');
+          if (e.key === 'ArrowDown') handleFocusNavigation('down');
+          if (e.key === 'ArrowLeft') handleFocusNavigation('left');
+          if (e.key === 'ArrowRight') handleFocusNavigation('right');
+        }
+
+        // Softkey Kısayolları
         if (['Escape', 'SoftLeft', 'F1'].includes(e.key) && !isInput) { e.preventDefault(); showScreen('menu'); }
-        if (['SoftRight', 'F2', 'Backspace', '0'].includes(e.key) && !isInput) { e.preventDefault(); goBack(); }
-        if (document.querySelector('.screen:not(.hidden)')?.id === 'screen-menu' && /^[1-4]$/.test(e.key)) {
+        if (['SoftRight', 'F2', 'Backspace'].includes(e.key) && !isInput) { e.preventDefault(); goBack(); }
+        
+        // Menü İçi Sayısal Kısayollar (1-4)
+        if (document.querySelector('.screen:not(.hidden)')?.id === 'screen-menu' && /^[1-4]$/.test(e.key) && !isInput) {
           menuItems[parseInt(e.key) - 1]?.click();
         }
       });
@@ -709,6 +825,9 @@
         if (settings.searchEngine) searchEngineSelect.value = settings.searchEngine;
         if (settings.fontSize) fontSizeSelect.value = settings.fontSize;
         if (settings.theme) themeSelect.value = settings.theme;
+        if (settings.keyHash) keyHashSelect.value = settings.keyHash;
+        if (settings.keyStar) keyStarSelect.value = settings.keyStar;
+        if (settings.keyZero) keyZeroSelect.value = settings.keyZero;
         
         applyTheme();
         renderSpeedDial();
@@ -738,6 +857,11 @@
         searchEngineSelect.onchange = (e) => { settings.searchEngine = e.target.value; saveSettings(); };
         fontSizeSelect.onchange = (e) => { settings.fontSize = e.target.value; saveSettings(); applyTheme(); };
         themeSelect.onchange = (e) => { settings.theme = e.target.value; saveSettings(); applyTheme(); };
+        
+        // Tuş Atama Değişiklikleri Dinleyicileri
+        keyHashSelect.onchange = (e) => { settings.keyHash = e.target.value; saveSettings(); };
+        keyStarSelect.onchange = (e) => { settings.keyStar = e.target.value; saveSettings(); };
+        keyZeroSelect.onchange = (e) => { settings.keyZero = e.target.value; saveSettings(); };
 
         menuItems.forEach(i => i.onclick = () => showScreen(i.getAttribute('data-target')));
 
