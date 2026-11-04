@@ -1,0 +1,16 @@
+{
+  "short_name": "MicroBrowser",
+  "name": "MicroBrowser 128x160",
+  "icons": [
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#000000",
+  "theme_color": "#1d4ed8",
+  "display": "standalone",
+  "orientation": "portrait"
+}
