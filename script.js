@@ -67,21 +67,22 @@
 
   const navStack = [];
 
-  function saveFavorites() { try { localStorage.setItem('mb_fav_v10', JSON.stringify(favorites)); } catch (e) {} }
-  function saveHistory() { try { localStorage.setItem('mb_hist_v10', JSON.stringify(historyEntries)); } catch (e) {} }
-  function saveSpeedDial() { try { localStorage.setItem('mb_sd_v10', JSON.stringify(speedDial)); } catch (e) {} }
-  function saveSettings() { try { localStorage.setItem('mb_set_v10', JSON.stringify(settings)); } catch (e) {} }
+  function saveFavorites() { try { localStorage.setItem('mb_fav_v11', JSON.stringify(favorites)); } catch (e) {} }
+  function saveHistory() { try { localStorage.setItem('mb_hist_v11', JSON.stringify(historyEntries)); } catch (e) {} }
+  function saveSpeedDial() { try { localStorage.setItem('mb_sd_v11', JSON.stringify(speedDial)); } catch (e) {} }
+  function saveSettings() { try { localStorage.setItem('mb_set_v11', JSON.stringify(settings)); } catch (e) {} }
 
   function loadAll() {
-    try { favorites = JSON.parse(localStorage.getItem('mb_fav_v10') || '[]'); } catch (e) {}
-    try { historyEntries = JSON.parse(localStorage.getItem('mb_hist_v10') || '[]'); } catch (e) {}
+    try { favorites = JSON.parse(localStorage.getItem('mb_fav_v11') || '[]'); } catch (e) {}
+    try { historyEntries = JSON.parse(localStorage.getItem('mb_hist_v11') || '[]'); } catch (e) {}
     try {
-      const sd = JSON.parse(localStorage.getItem('mb_sd_v10'));
+      const sd = JSON.parse(localStorage.getItem('mb_sd_v11'));
       if (sd && Array.isArray(sd)) speedDial = sd;
     } catch (e) {}
-    try { Object.assign(settings, JSON.parse(localStorage.getItem('mb_set_v10') || '{}')); } catch (e) {}
+    try { Object.assign(settings, JSON.parse(localStorage.getItem('mb_set_v11') || '{}')); } catch (e) {}
   }
 
+  /* KORUMALI SİTELERİ AÇAN PROXY SİSTEMİ */
   window.openUrl = function(targetUrl) {
     let finalUrl = targetUrl;
     
@@ -288,6 +289,7 @@
     datetimeEl.textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   }
 
+  /* TUŞ TAKIMI KONTROLLERİ */
   document.addEventListener('keydown', (e) => {
     const isInput = ['INPUT', 'SELECT'].includes(e.target.tagName);
     const activeScreen = document.querySelector('.screen:not(.hidden)')?.getAttribute('data-screen');
