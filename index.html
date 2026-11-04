@@ -3,11 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=128, height=160, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>MicroBrowser Perfect 128x160</title>
+  <title>MicroBrowser GitHub Edition</title>
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; max-width: 100%; margin: 0; padding: 0; }
     
-    /* 🎨 RENK PALETLERİ */
     :root, :root.theme-day {
       --bg: #ffffff;
       --panel: #f8fafc;
@@ -54,28 +53,6 @@
       --nav-bg: #2e1a00;
     }
 
-    :root.theme-blue {
-      --bg: #0b0314;
-      --panel: #18092c;
-      --text: #00ffff;
-      --muted: #c084fc;
-      --accent: #ff007f;
-      --accent-contrast: #ffffff;
-      --border: #581c87;
-      --nav-bg: #2e1065;
-    }
-
-    :root.theme-gameboy {
-      --bg: #8b956d;
-      --panel: #9bbc0f;
-      --text: #0f380f;
-      --muted: #306230;
-      --accent: #0f380f;
-      --accent-contrast: #9bbc0f;
-      --border: #306230;
-      --nav-bg: #8bac0f;
-    }
-
     html, body {
       width: 128px;
       height: 160px;
@@ -112,6 +89,7 @@
       flex: 0 0 auto;
       font-size: 7.5px;
       font-weight: bold;
+      z-index: 10000;
     }
 
     .screen {
@@ -126,6 +104,20 @@
 
     .screen::-webkit-scrollbar { display: none; }
     .hidden { display: none !important; }
+
+    #screen-web {
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    #web-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+    }
 
     .app-title {
       font-size: 9.5px;
@@ -228,11 +220,7 @@
       color: var(--accent-contrast);
     }
 
-    .menu-list {
-      list-style: none;
-      padding: 0;
-      margin: 2px 0 0 0;
-    }
+    .menu-list { list-style: none; padding: 0; margin: 2px 0 0 0; }
 
     .menu-item {
       width: 100%;
@@ -271,16 +259,7 @@
       flex: 0 0 auto;
     }
 
-    .menu-item:focus .num, .menu-item:hover .num {
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .list {
-      list-style: none;
-      padding: 0;
-      margin: 2px 0 0 0;
-    }
+    .list { list-style: none; padding: 0; margin: 2px 0 0 0; }
 
     .list li {
       display: flex;
@@ -295,41 +274,13 @@
       color: var(--text);
     }
 
-    .list li a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 8px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+    .list-btns { display: flex; gap: 2px; margin-top: 1px; }
 
-    .list-btns {
-      display: flex;
-      gap: 2px;
-      margin-top: 1px;
-    }
+    .list-btns .btn { flex: 1; font-size: 6.5px; height: 15px; padding: 1px 2px; }
 
-    .list-btns .btn {
-      flex: 1;
-      font-size: 6.5px;
-      height: 15px;
-      padding: 1px 2px;
-    }
+    .setting-row { margin: 3px 0; display: flex; flex-direction: column; gap: 1px; }
 
-    .setting-row {
-      margin: 3px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .setting-row label {
-      font-size: 7px;
-      color: var(--muted);
-      font-weight: bold;
-    }
+    .setting-row label { font-size: 7px; color: var(--muted); font-weight: bold; }
 
     select, input[type="text"] {
       padding: 1px 2px;
@@ -344,16 +295,19 @@
       font-weight: bold;
     }
 
-    /* SANAL FARE İMLECİ */
+    /* KESİNTİSİZ SANAL İMLEÇ OVERLAY */
     #virtual-cursor {
-      position: absolute;
+      position: fixed;
+      top: 50%;
+      left: 50%;
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: red;
-      border: 1px solid white;
+      background: #ff0000;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 0 4px rgba(0,0,0,0.8);
       pointer-events: none;
-      z-index: 9999;
+      z-index: 99999;
       display: none;
       transform: translate(-50%, -50%);
     }
@@ -368,7 +322,7 @@
       justify-content: space-between;
       gap: 2px;
       height: 14px;
-      z-index: 1000;
+      z-index: 10000;
     }
 
     .softkey {
@@ -395,17 +349,15 @@
 </head>
 <body>
   <div id="app" class="container">
-    <!-- SANAL İMLEÇ -->
     <div id="virtual-cursor"></div>
 
-    <!-- ÜST BAR -->
     <header class="topbar">
       <span id="zoom-indicator">100%</span>
       <span id="cursor-indicator" style="color:var(--accent);">İmleç:KAPALI</span>
       <span id="datetime">00:00</span>
     </header>
 
-    <!-- HOME SAYFASI -->
+    <!-- HOME -->
     <main class="screen" id="screen-home" data-screen="home">
       <h1 class="app-title">MicroBrowser</h1>
 
@@ -421,13 +373,18 @@
       <div id="speed-dial" class="speed-dial"></div>
     </main>
 
-    <!-- HIZLI ERİŞİM DÜZENLEME EKRANI -->
+    <!-- DAHİLİ WEB PENCERESİ -->
+    <main class="screen hidden" id="screen-web" data-screen="web">
+      <iframe id="web-frame" src="about:blank"></iframe>
+    </main>
+
+    <!-- DÜZENLEME EKRANI -->
     <main class="screen hidden" id="screen-sd-manage" data-screen="sd-manage">
       <h2>Hızlı Erişim Düzenle</h2>
       <ul id="sd-manage-list" class="list"></ul>
     </main>
 
-    <!-- ANA MENÜ -->
+    <!-- MENÜ -->
     <main class="screen hidden" id="screen-menu" data-screen="menu">
       <h2>Menü</h2>
       <ul class="menu-list" id="menu-list">
@@ -439,12 +396,12 @@
       </ul>
     </main>
 
-    <!-- FAVORİLER (Novalidate eklendi, taşan uyarı engellendi) -->
+    <!-- FAVORİLER -->
     <main class="screen hidden" id="screen-favorites" data-screen="favorites">
       <h2>Favoriler</h2>
       <form id="add-favorite-form" style="display:flex; flex-direction:column; gap:2px; margin-bottom:3px;" novalidate onsubmit="return false;">
-        <input id="fav-title" type="text" placeholder="Başlık (örn: Haber)" />
-        <input id="fav-url" type="text" placeholder="URL (örn: haber.com)" />
+        <input id="fav-title" type="text" placeholder="Başlık" />
+        <input id="fav-url" type="text" placeholder="URL (google.com)" />
         <button id="btn-save-fav" class="btn full">Ekle</button>
       </form>
       <ul id="favorites-list" class="list"></ul>
@@ -457,7 +414,7 @@
       <ul id="history-list" class="list"></ul>
     </main>
 
-    <!-- TUŞ AYARLARI VE KILAVUZ (* ve # Tuş Seçenekleri Eklendi) -->
+    <!-- TUŞ AYARLARI -->
     <main class="screen hidden" id="screen-keys" data-screen="keys">
       <h2>Tuş Atamaları & İmleç</h2>
 
@@ -468,40 +425,46 @@
           <option value="zoomIn">Büyüt (+)</option>
           <option value="zoomOut">Küçült (-)</option>
           <option value="search">Arama Kutusuna Git</option>
-          <option value="none">Yok</option>
         </select>
       </div>
 
       <div class="setting-row">
-        <label>'*' (Yıldız) Tuşu İşlevi:</label>
+        <label>'*' Tuşu İşlevi:</label>
         <select id="key-star-action">
           <option value="cursor">Sanal İmleç Aç/Kapat</option>
           <option value="zoomOut">Ekranı Küçült (-)</option>
           <option value="theme">Tema Değiştir</option>
-          <option value="none">Yok</option>
         </select>
       </div>
 
       <div class="setting-row">
-        <label>'#' (Kare) Tuşu İşlevi:</label>
+        <label>'#' Tuşu İşlevi:</label>
         <select id="key-hash-action">
           <option value="zoomIn">Ekranı Büyüt (+)</option>
           <option value="cursor">Sanal İmleç Aç/Kapat</option>
           <option value="search">Arama Kutusuna Git</option>
-          <option value="none">Yok</option>
         </select>
       </div>
 
       <div style="background:var(--panel); padding:3px; border-radius:3px; border:1px solid var(--border); font-size:6.5px; margin-top:3px; line-height:1.2;">
         <strong>Kılavuz:</strong><br>
-        • <strong>İmleç:</strong> Açıldığında yön tuşlarıyla gezin. `OK` tuşuyla tıklama yapın.<br>
-        • <strong>Zoom:</strong> Ekran ölçeğini `*` ve `#` veya `7`/`9` ile değiştirebilirsiniz.
+        • <strong>İmleç:</strong> Açıldığında yön tuşlarıyla gezilir. `OK` / `5` ile tıklanır.<br>
+        • <strong>CORS Proxy:</strong> Engelli siteler proxy köprüsü ile otomatik açılır.
       </div>
     </main>
 
-    <!-- GENEL AYARLAR (Varsayılan Google & Masaüstü Mod Seçeneği) -->
+    <!-- GENEL AYARLAR -->
     <main class="screen hidden" id="screen-settings" data-screen="settings">
       <h2>Genel Ayarlar</h2>
+
+      <div class="setting-row">
+        <label>CORS Proxy Modu</label>
+        <select id="proxy-select">
+          <option value="https://api.allorigins.win/raw?url=">AllOrigins (Gelişmiş)</option>
+          <option value="https://corsproxy.io/?">CORSProxy.io</option>
+          <option value="direct">Doğrudan (Proxy'siz)</option>
+        </select>
+      </div>
 
       <div class="setting-row">
         <label>Site Görünümü Modu</label>
@@ -528,18 +491,6 @@
           <option value="theme-dark">🌙 Gece (Koyu)</option>
           <option value="theme-matrix">📟 Matrix Yeşil</option>
           <option value="theme-amber">🟧 Nokia Kehribar</option>
-          <option value="theme-blue">🌊 Gece Mavisi</option>
-          <option value="theme-gameboy">🕹️ GameBoy Zeytin</option>
-        </select>
-      </div>
-
-      <div class="setting-row">
-        <label>Varsayılan Zoom</label>
-        <select id="default-zoom-select">
-          <option value="1">100% (Normal)</option>
-          <option value="1.15">115% (Büyük)</option>
-          <option value="1.3">130% (Çok Büyük)</option>
-          <option value="0.85">85% (Küçük)</option>
         </select>
       </div>
     </main>
@@ -554,7 +505,6 @@
       </div>
     </main>
 
-    <!-- ALT BAR -->
     <footer class="softkey-bar">
       <button id="btn-lsk" class="softkey">[Menu]</button>
       <div class="status" id="status">Google</div>
@@ -564,8 +514,14 @@
 
   <script>
     (() => {
+      // SERVICE WORKER KAYDI (GitHub Pages ve HTTPS Sunucular İçin)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('worker.js').catch(() => {});
+      }
+
       const screens = {
         home: document.getElementById('screen-home'),
+        web: document.getElementById('screen-web'),
         menu: document.getElementById('screen-menu'),
         favorites: document.getElementById('screen-favorites'),
         history: document.getElementById('screen-history'),
@@ -575,6 +531,7 @@
         'sd-manage': document.getElementById('screen-sd-manage')
       };
 
+      const webFrame = document.getElementById('web-frame');
       const btnLsk = document.getElementById('btn-lsk');
       const btnRsk = document.getElementById('btn-rsk');
       const btnGo = document.getElementById('btn-go');
@@ -590,7 +547,7 @@
       const btnClearHistory = document.getElementById('btn-clear-history');
       const searchEngineSelect = document.getElementById('search-engine');
       const viewModeSelect = document.getElementById('view-mode-select');
-      const defaultZoomSelect = document.getElementById('default-zoom-select');
+      const proxySelect = document.getElementById('proxy-select');
       const themeSelect = document.getElementById('theme-select');
       const statusEl = document.getElementById('status');
       const datetimeEl = document.getElementById('datetime');
@@ -617,10 +574,10 @@
         { title: 'DDG Lite', url: 'https://lite.duckduckgo.com/lite/' }
       ];
 
-      /* VARSAYILAN ARAMA MOTORU GOOGLE */
       let settings = {
         searchEngine: 'https://www.google.com/search?q=',
         viewMode: 'mobile',
+        proxy: 'https://api.allorigins.win/raw?url=',
         theme: 'theme-day',
         zoom: 1.0,
         key5: 'cursor',
@@ -630,24 +587,33 @@
 
       const navStack = [];
 
-      function saveFavorites() { try { localStorage.setItem('mb_fav_v7', JSON.stringify(favorites)); } catch (e) {} }
-      function saveHistory() { try { localStorage.setItem('mb_hist_v7', JSON.stringify(historyEntries)); } catch (e) {} }
-      function saveSpeedDial() { try { localStorage.setItem('mb_sd_v7', JSON.stringify(speedDial)); } catch (e) {} }
-      function saveSettings() { try { localStorage.setItem('mb_set_v7', JSON.stringify(settings)); } catch (e) {} }
+      function saveFavorites() { try { localStorage.setItem('mb_fav_v9', JSON.stringify(favorites)); } catch (e) {} }
+      function saveHistory() { try { localStorage.setItem('mb_hist_v9', JSON.stringify(historyEntries)); } catch (e) {} }
+      function saveSpeedDial() { try { localStorage.setItem('mb_sd_v9', JSON.stringify(speedDial)); } catch (e) {} }
+      function saveSettings() { try { localStorage.setItem('mb_set_v9', JSON.stringify(settings)); } catch (e) {} }
 
       function loadAll() {
-        try { favorites = JSON.parse(localStorage.getItem('mb_fav_v7') || '[]'); } catch (e) {}
-        try { historyEntries = JSON.parse(localStorage.getItem('mb_hist_v7') || '[]'); } catch (e) {}
+        try { favorites = JSON.parse(localStorage.getItem('mb_fav_v9') || '[]'); } catch (e) {}
+        try { historyEntries = JSON.parse(localStorage.getItem('mb_hist_v9') || '[]'); } catch (e) {}
         try {
-          const sd = JSON.parse(localStorage.getItem('mb_sd_v7'));
+          const sd = JSON.parse(localStorage.getItem('mb_sd_v9'));
           if (sd && Array.isArray(sd)) speedDial = sd;
         } catch (e) {}
-        try { Object.assign(settings, JSON.parse(localStorage.getItem('mb_set_v7') || '{}')); } catch (e) {}
+        try { Object.assign(settings, JSON.parse(localStorage.getItem('mb_set_v9') || '{}')); } catch (e) {}
       }
 
-      window.openUrl = function(url) {
-        window.open(url, '_blank');
-        addHistory(url, url);
+      /* CORS VE IFRAME ENGELİNİ AŞAN AKILLI SAYFA YÜKLEME */
+      window.openUrl = function(targetUrl) {
+        let finalUrl = targetUrl;
+        
+        // Proxy aktifse URL'i proxy sunucusundan geçir
+        if (settings.proxy && settings.proxy !== 'direct') {
+          finalUrl = settings.proxy + encodeURIComponent(targetUrl);
+        }
+
+        webFrame.src = finalUrl;
+        showScreen('web');
+        addHistory(targetUrl, targetUrl);
       };
 
       function setZoom(val) {
@@ -674,7 +640,15 @@
       function clickVirtualCursor() {
         const el = document.elementFromPoint(cursorX, cursorY);
         if (el) {
-          el.click();
+          const event = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+            clientX: cursorX,
+            clientY: cursorY
+          });
+          el.dispatchEvent(event);
+          if (typeof el.click === 'function') el.click();
           if (['INPUT', 'SELECT', 'BUTTON', 'A'].includes(el.tagName)) el.focus();
         }
       }
@@ -683,7 +657,7 @@
         if (action === 'cursor') toggleCursor();
         else if (action === 'zoomIn') setZoom(zoomLevel + 0.1);
         else if (action === 'zoomOut') setZoom(zoomLevel - 0.1);
-        else if (action === 'search') searchInput.focus();
+        else if (action === 'search') { showScreen('home'); searchInput.focus(); }
       }
 
       function renderSpeedDial() {
@@ -730,7 +704,7 @@
         favorites.slice().reverse().forEach((f) => {
           const li = document.createElement('li');
           li.innerHTML = `
-            <a href="${f.url}" target="_blank">${f.title || f.url}</a>
+            <a href="${f.url}">${f.title || f.url}</a>
             <div class="list-btns">
               <button class="btn open-btn">Aç</button>
               <button class="btn sd-add-btn">Hızlıya Ekle</button>
@@ -763,7 +737,7 @@
         historyEntries.slice().reverse().forEach((h) => {
           const li = document.createElement('li');
           li.innerHTML = `
-            <a href="${h.url}" target="_blank">${h.title || h.url}</a>
+            <a href="${h.url}">${h.title || h.url}</a>
             <div class="list-btns">
               <button class="btn open-btn">Aç</button>
               <button class="btn del-btn" style="background:var(--muted);">Sil</button>
@@ -834,7 +808,6 @@
         datetimeEl.textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       }
 
-      /* KISAYOL & SANAL İMLEÇ KONTROLLERİ */
       document.addEventListener('keydown', (e) => {
         const isInput = ['INPUT', 'SELECT'].includes(e.target.tagName);
         const activeScreen = document.querySelector('.screen:not(.hidden)')?.getAttribute('data-screen');
@@ -866,8 +839,8 @@
         loadAll();
         if (settings.searchEngine) searchEngineSelect.value = settings.searchEngine;
         if (settings.viewMode) viewModeSelect.value = settings.viewMode;
+        if (settings.proxy) proxySelect.value = settings.proxy;
         if (settings.theme) themeSelect.value = settings.theme;
-        if (settings.zoom) setZoom(parseFloat(settings.zoom));
         
         key5Select.value = settings.key5 || 'cursor';
         keyStarSelect.value = settings.keyStar || 'zoomOut';
@@ -885,7 +858,6 @@
 
         btnManageSd.onclick = () => { renderSdManage(); showScreen('sd-manage'); };
 
-        /* TEMİZ FAVORİ EKLEME MANTIĞI (Baloncuk Uyarısız) */
         btnSaveFav.onclick = () => {
           const t = favTitleInput.value.trim();
           const u = favUrlInput.value.trim();
@@ -904,7 +876,7 @@
         btnClearHistory.onclick = () => { historyEntries = []; saveHistory(); renderHistory(); };
         searchEngineSelect.onchange = (e) => { settings.searchEngine = e.target.value; saveSettings(); updateStatusEngine(); };
         viewModeSelect.onchange = (e) => { settings.viewMode = e.target.value; saveSettings(); updateStatusEngine(); };
-        defaultZoomSelect.onchange = (e) => { settings.zoom = parseFloat(e.target.value); setZoom(settings.zoom); saveSettings(); };
+        proxySelect.onchange = (e) => { settings.proxy = e.target.value; saveSettings(); };
         themeSelect.onchange = (e) => { settings.theme = e.target.value; saveSettings(); applyTheme(); };
 
         key5Select.onchange = (e) => { settings.key5 = e.target.value; saveSettings(); };
