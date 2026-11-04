@@ -3,55 +3,75 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=128, height=160, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <link rel="manifest" href="manifest.json" />
   <title>MicroBrowser 128x160</title>
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; max-width: 100%; margin: 0; padding: 0; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; max-width: 100%; }
     
     :root, :root.theme-day {
       --bg: #ffffff;
-      --panel: #f8fafc;
-      --text: #000000;
-      --muted: #475569;
-      --accent: #1d4ed8;
+      --panel: #f0f4f8;
+      --text: #1a202c;
+      --muted: #64748b;
+      --accent: #2563eb;
       --accent-contrast: #ffffff;
-      --border: #94a3b8;
+      --border: #cbd5e1;
       --nav-bg: #e2e8f0;
       --font-size: 8px;
-      --zoom-level: 1;
     }
 
     :root.theme-dark {
       --bg: #000000;
       --panel: #121212;
       --text: #ffffff;
-      --muted: #cccccc;
-      --accent: #00e65c;
+      --muted: #888888;
+      --accent: #ffffff;
       --accent-contrast: #000000;
-      --border: #404040;
-      --nav-bg: #1a1a1a;
+      --border: #333333;
+      --nav-bg: #1e1e1e;
     }
 
     :root.theme-matrix {
       --bg: #000000;
-      --panel: #041404;
+      --panel: #051405;
       --text: #00ff66;
-      --muted: #00cc44;
+      --muted: #008833;
       --accent: #00ff66;
       --accent-contrast: #000000;
-      --border: #005511;
+      --border: #004411;
       --nav-bg: #0a290a;
     }
 
     :root.theme-amber {
-      --bg: #000000;
-      --panel: #1a0f00;
-      --text: #ffb700;
-      --muted: #dd9900;
-      --accent: #ffb700;
-      --accent-contrast: #000000;
-      --border: #664600;
-      --nav-bg: #2e1a00;
+      --bg: #120a00;
+      --panel: #241400;
+      --text: #ffb000;
+      --muted: #996600;
+      --accent: #ffb000;
+      --accent-contrast: #120a00;
+      --border: #4d3300;
+      --nav-bg: #382000;
+    }
+
+    :root.theme-blue, :root.theme-cyber {
+      --bg: #0f051d;
+      --panel: #1b0a33;
+      --text: #00ffff;
+      --muted: #a855f7;
+      --accent: #ff007f;
+      --accent-contrast: #ffffff;
+      --border: #4c1d95;
+      --nav-bg: #2e1065;
+    }
+
+    :root.theme-gameboy {
+      --bg: #8b956d;
+      --panel: #9bbc0f;
+      --text: #0f380f;
+      --muted: #306230;
+      --accent: #0f380f;
+      --accent-contrast: #9bbc0f;
+      --border: #306230;
+      --nav-bg: #8bac0f;
     }
 
     html, body {
@@ -64,8 +84,7 @@
       font-family: monospace, sans-serif;
       font-size: var(--font-size);
       overflow: hidden;
-      user-select: none;
-      -webkit-user-select: none;
+      -webkit-text-size-adjust: 100%;
     }
 
     .container {
@@ -76,120 +95,99 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .topbar {
-      height: 14px;
-      padding: 0 3px;
+      padding: 2px 4px;
       background: var(--nav-bg);
       border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       flex: 0 0 auto;
-      font-size: 7.5px;
+    }
+
+    .datetime {
+      font-size: 8px;
       font-weight: bold;
-      z-index: 10000;
+      color: var(--text);
+      text-align: center;
     }
 
     .screen {
-      padding: 3px;
+      padding: 4px;
       flex: 1 1 auto;
       overflow-y: auto;
       scrollbar-width: none;
-      transform: scale(var(--zoom-level));
-      transform-origin: top left;
-      width: calc(100% / var(--zoom-level));
     }
 
     .screen::-webkit-scrollbar { display: none; }
     .hidden { display: none !important; }
 
-    #screen-web {
-      padding: 0;
-      overflow: hidden;
-      width: 100%;
-      height: 100%;
-    }
-
-    #web-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background: #ffffff;
-    }
-
     .app-title {
-      font-size: 9.5px;
-      margin: 1px 0 3px 0;
+      font-size: 10px;
+      margin: 1px 0 4px 0;
       text-align: center;
       font-weight: bold;
       color: var(--accent);
-      text-transform: uppercase;
     }
 
     .screen h2 {
-      font-size: 8.5px;
-      margin: 1px 0 3px 0;
+      font-size: 9px;
+      margin: 2px 0 4px 0;
       text-align: center;
       border-bottom: 1px solid var(--border);
       color: var(--text);
-      font-weight: bold;
     }
 
     .search-wrap {
       display: flex;
       gap: 2px;
       align-items: center;
-      margin-bottom: 3px;
     }
 
     .search-input {
       flex: 1 1 auto;
       min-width: 0;
-      height: 18px;
-      padding: 1px 3px;
+      padding: 3px;
       border-radius: 3px;
-      border: 1px solid var(--accent);
+      border: 1px solid var(--border);
       font-size: 8px;
       background: var(--panel);
       color: var(--text);
       outline: none;
-      font-weight: bold;
     }
 
     .btn {
       background: var(--accent);
       color: var(--accent-contrast);
       border: 1px solid var(--border);
-      padding: 2px 4px;
-      height: 18px;
+      padding: 3px 4px;
       border-radius: 3px;
       font-size: 8px;
       cursor: pointer;
       white-space: nowrap;
       font-weight: bold;
-      outline: none;
     }
 
-    .btn.full { width: 100%; margin-top: 3px; }
+    .btn.full {
+      width: 100%;
+      margin-top: 3px;
+    }
 
     .sd-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 2px;
-      font-size: 7.5px;
+      margin-top: 5px;
+      font-size: 7px;
       font-weight: bold;
-      color: var(--accent);
     }
 
     .speed-dial {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 2.5px;
-      margin-top: 2px;
+      gap: 3px;
+      margin-top: 3px;
     }
 
     .sd-item {
@@ -198,17 +196,25 @@
       border-radius: 3px;
       padding: 3px;
       text-align: center;
-      font-size: 7.5px;
+      font-size: 7px;
       color: var(--text);
+      text-decoration: none;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       cursor: pointer;
-      font-weight: bold;
-      outline: none;
     }
 
-    .menu-list { list-style: none; padding: 0; margin: 2px 0 0 0; }
+    .sd-item:focus, .sd-item:hover {
+      background: var(--accent);
+      color: var(--accent-contrast);
+    }
+
+    .menu-list {
+      list-style: none;
+      padding: 0;
+      margin: 2px 0 0 0;
+    }
 
     .menu-item {
       width: 100%;
@@ -218,22 +224,26 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 3px;
-      padding: 2.5px 3px;
+      padding: 3px;
       margin-bottom: 2px;
       font-size: 8px;
       color: var(--text);
       cursor: pointer;
       text-align: left;
-      font-weight: bold;
+    }
+
+    .menu-item:focus, .menu-item:hover {
       outline: none;
+      background: var(--accent);
+      color: var(--accent-contrast);
     }
 
     .menu-item .num {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 10px;
-      height: 10px;
+      width: 11px;
+      height: 11px;
       border-radius: 2px;
       background: var(--accent);
       color: var(--accent-contrast);
@@ -242,14 +252,23 @@
       flex: 0 0 auto;
     }
 
-    .list { list-style: none; padding: 0; margin: 2px 0 0 0; }
+    .menu-item:focus .num, .menu-item:hover .num {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 3px 0 0 0;
+    }
 
     .list li {
       display: flex;
       flex-direction: column;
-      padding: 2.5px;
+      padding: 3px;
       border-radius: 3px;
-      margin-bottom: 2.5px;
+      margin-bottom: 3px;
       background: var(--panel);
       font-size: 7px;
       gap: 2px;
@@ -257,45 +276,70 @@
       color: var(--text);
     }
 
-    .list-btns { display: flex; gap: 2px; margin-top: 1px; }
+    .list li a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-    .list-btns .btn { flex: 1; font-size: 6.5px; height: 15px; padding: 1px 2px; }
+    .list-btns {
+      display: flex;
+      gap: 2px;
+      margin-top: 1px;
+      flex-wrap: wrap;
+    }
 
-    .setting-row { margin: 3px 0; display: flex; flex-direction: column; gap: 1px; }
+    .list-btns .btn {
+      flex: 1;
+      font-size: 6px;
+      padding: 2px 1px;
+    }
 
-    .setting-row label { font-size: 7px; color: var(--muted); font-weight: bold; }
+    .fav-form {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 3px;
+    }
 
-    select, input[type="text"] {
-      padding: 1px 2px;
-      height: 18px;
+    .fav-form input, select {
+      padding: 2px;
       border-radius: 3px;
-      border: 1px solid var(--accent);
+      border: 1px solid var(--border);
       font-size: 8px;
       background: var(--panel);
       color: var(--text);
       width: 100%;
-      outline: none;
-      font-weight: bold;
     }
 
-    #virtual-cursor {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #ff0000;
-      border: 1.5px solid #ffffff;
-      box-shadow: 0 0 4px rgba(0,0,0,0.8);
-      pointer-events: none;
-      z-index: 99999;
-      display: none;
-      transform: translate(-50%, -50%);
+    .setting-row {
+      margin: 3px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .setting-row label {
+      font-size: 7px;
+      color: var(--muted);
+    }
+
+    .about {
+      background: var(--panel);
+      padding: 3px;
+      border-radius: 3px;
+      font-size: 7px;
+      color: var(--muted);
+      line-height: 1.1;
+      border: 1px solid var(--border);
     }
 
     .softkey-bar {
-      padding: 0 3px;
+      padding: 2px 4px;
       border-top: 1px solid var(--border);
       background: var(--nav-bg);
       flex: 0 0 auto;
@@ -303,8 +347,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 2px;
-      height: 14px;
-      z-index: 10000;
+      height: 15px;
     }
 
     .softkey {
@@ -325,18 +368,13 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div id="app" class="container">
-    <div id="virtual-cursor"></div>
-
     <header class="topbar">
-      <span id="zoom-indicator">100%</span>
-      <span id="cursor-indicator" style="color:var(--accent);">İmleç:KAPALI</span>
-      <span id="datetime">00:00</span>
+      <div id="datetime" class="datetime"></div>
     </header>
 
     <!-- HOME -->
@@ -345,120 +383,55 @@
 
       <div class="search-wrap">
         <input id="search-input" class="search-input" type="search" placeholder="Ara veya URL..." />
-        <button id="btn-go" class="btn">Git</button>
+        <button id="btn-go" class="btn">Ara</button>
       </div>
 
+      <!-- Dinamik Hızlı Erişim -->
       <div class="sd-header">
-        <span>HIZLI ERİŞİM</span>
-        <button id="btn-manage-sd" class="btn" style="font-size:6px; height:13px; padding:0 3px;">Düzenle</button>
+        <span>Hızlı Erişim</span>
+        <button id="btn-manage-sd" class="btn" style="font-size:6px; padding:1px 3px;">Düzenle</button>
       </div>
       <div id="speed-dial" class="speed-dial"></div>
     </main>
 
-    <!-- DAHİLİ WEB PENCERESİ -->
-    <main class="screen hidden" id="screen-web" data-screen="web">
-      <iframe id="web-frame" src="about:blank"></iframe>
-    </main>
-
-    <!-- DÜZENLEME EKRANI -->
+    <!-- HIZLI ERİŞİM DÜZENLEME EKRANI -->
     <main class="screen hidden" id="screen-sd-manage" data-screen="sd-manage">
       <h2>Hızlı Erişim Düzenle</h2>
       <ul id="sd-manage-list" class="list"></ul>
     </main>
 
-    <!-- MENÜ -->
+    <!-- MENU -->
     <main class="screen hidden" id="screen-menu" data-screen="menu">
       <h2>Menü</h2>
       <ul class="menu-list" id="menu-list">
         <li><button class="menu-item" data-target="favorites"><span class="num">1</span> Favoriler</button></li>
         <li><button class="menu-item" data-target="history"><span class="num">2</span> Geçmiş</button></li>
-        <li><button class="menu-item" data-target="keys"><span class="num">3</span> Tuş Ayarları & Kılavuz</button></li>
-        <li><button class="menu-item" data-target="settings"><span class="num">4</span> Genel Ayarlar</button></li>
-        <li><button class="menu-item" data-target="help"><span class="num">5</span> Yardım</button></li>
+        <li><button class="menu-item" data-target="settings"><span class="num">3</span> Ayarlar</button></li>
+        <li><button class="menu-item" data-target="help"><span class="num">4</span> Yardım</button></li>
       </ul>
     </main>
 
-    <!-- FAVORİLER -->
+    <!-- FAVORITES -->
     <main class="screen hidden" id="screen-favorites" data-screen="favorites">
       <h2>Favoriler</h2>
-      <form id="add-favorite-form" style="display:flex; flex-direction:column; gap:2px; margin-bottom:3px;" novalidate onsubmit="return false;">
-        <input id="fav-title" type="text" placeholder="Başlık" />
-        <input id="fav-url" type="text" placeholder="URL (google.com)" />
+      <form id="add-favorite-form" class="fav-form" onsubmit="return false;">
+        <input id="fav-title" type="text" placeholder="Başlık" required />
+        <input id="fav-url" type="text" placeholder="google.com" required />
         <button id="btn-save-fav" class="btn full">Ekle</button>
       </form>
       <ul id="favorites-list" class="list"></ul>
     </main>
 
-    <!-- GEÇMİŞ -->
+    <!-- HISTORY -->
     <main class="screen hidden" id="screen-history" data-screen="history">
       <h2>Geçmiş</h2>
-      <button id="btn-clear-history" class="btn full" style="margin-bottom:3px;">Temizle</button>
+      <button id="btn-clear-history" class="btn full">Temizle</button>
       <ul id="history-list" class="list"></ul>
     </main>
 
-    <!-- TUŞ AYARLARI -->
-    <main class="screen hidden" id="screen-keys" data-screen="keys">
-      <h2>Tuş Atamaları & İmleç</h2>
-
-      <div class="setting-row">
-        <label>'5' Tuşu İşlevi:</label>
-        <select id="key-5-action">
-          <option value="cursor">Sanal İmleç Aç/Kapat</option>
-          <option value="zoomIn">Büyüt (+)</option>
-          <option value="zoomOut">Küçült (-)</option>
-          <option value="search">Arama Kutusuna Git</option>
-        </select>
-      </div>
-
-      <div class="setting-row">
-        <label>'*' Tuşu İşlevi:</label>
-        <select id="key-star-action">
-          <option value="cursor">Sanal İmleç Aç/Kapat</option>
-          <option value="zoomOut">Ekranı Küçült (-)</option>
-          <option value="theme">Tema Değiştir</option>
-        </select>
-      </div>
-
-      <div class="setting-row">
-        <label>'#' Tuşu İşlevi:</label>
-        <select id="key-hash-action">
-          <option value="zoomIn">Ekranı Büyüt (+)</option>
-          <option value="cursor">Sanal İmleç Aç/Kapat</option>
-          <option value="search">Arama Kutusuna Git</option>
-        </select>
-      </div>
-    </main>
-
-    <!-- GENEL AYARLAR -->
+    <!-- SETTINGS -->
     <main class="screen hidden" id="screen-settings" data-screen="settings">
-      <h2>Genel Ayarlar</h2>
-
-      <div class="setting-row">
-        <label>CORS Proxy Yönlendirme</label>
-        <select id="proxy-select">
-          <option value="corsproxy">CORSProxy.io (Önerilen)</option>
-          <option value="allorigins">AllOrigins</option>
-          <option value="direct">Doğrudan (Proxy'siz)</option>
-        </select>
-      </div>
-
-      <div class="setting-row">
-        <label>Site Görünümü Modu</label>
-        <select id="view-mode-select">
-          <option value="mobile">📱 Mobil Görünüm</option>
-          <option value="desktop">💻 Masaüstü Görünüm</option>
-        </select>
-      </div>
-
-      <div class="setting-row">
-        <label>Arama Motoru</label>
-        <select id="search-engine">
-          <option value="https://www.google.com/search?q=">Google (Varsayılan)</option>
-          <option value="https://www.bing.com/search?q=">Bing</option>
-          <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
-          <option value="https://search.brave.com/search?q=">Brave</option>
-        </select>
-      </div>
+      <h2>Ayarlar</h2>
 
       <div class="setting-row">
         <label>Görünüm / Tema</label>
@@ -467,27 +440,314 @@
           <option value="theme-dark">🌙 Gece (Koyu)</option>
           <option value="theme-matrix">📟 Matrix Yeşil</option>
           <option value="theme-amber">🟧 Nokia Kehribar</option>
+          <option value="theme-blue">🌊 Gece Mavisi</option>
+          <option value="theme-gameboy">🕹️ GameBoy Zeytin</option>
         </select>
+      </div>
+
+      <div class="setting-row">
+        <label>Arama Motoru</label>
+        <select id="search-engine">
+          <option value="https://www.bing.com/search?q=">Bing</option>
+          <option value="https://www.google.com/search?q=">Google</option>
+          <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+          <option value="https://search.brave.com/search?q=">Brave</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <label>Yazı Boyutu</label>
+        <select id="font-size-select">
+          <option value="7px">Küçük (7px)</option>
+          <option value="8px" selected>Normal (8px)</option>
+          <option value="9px">Büyük (9px)</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="about">
+          <strong>MicroBrowser v3.5</strong> (128x160)<br>
+          Düzenlenebilir Hızlı Erişim
+        </div>
       </div>
     </main>
 
-    <!-- YARDIM EKRANI -->
+    <!-- HELP -->
     <main class="screen hidden" id="screen-help" data-screen="help">
       <h2>Yardım</h2>
       <div style="font-size:7px; line-height:1.2;">
-        • <strong>Sanal İmleç:</strong> Çerez butonları için imleç tuşuna basıp açın.<br>
-        • <strong>Masaüstü Modu:</strong> Ayarlar ekranından Masaüstü Görünümüne geçebilirsiniz.<br>
-        • <strong>Navigasyon:</strong> Sol Tuş (Menü), Sağ Tuş / 0 (Geri).
+        • <strong>Arama:</strong> Kelime veya URL yazın.<br>
+        • <strong>Navigasyon:</strong> Sol Tuş (Menu), Sağ Tuş / 0 (Geri).<br>
+        • <strong>Hızlı Erişim:</strong> Favorilerden ekleyebilir veya 'Düzenle'ye basarak silebilirsiniz.
       </div>
     </main>
 
     <footer class="softkey-bar">
-      <button id="btn-lsk" class="softkey">[Menu]</button>
-      <div class="status" id="status">Google</div>
-      <button id="btn-rsk" class="softkey" style="color:#ef4444;">[Geri]</button>
+      <button id="btn-lsk" class="softkey">Menu</button>
+      <div class="status" id="status"></div>
+      <button id="btn-rsk" class="softkey">Geri</button>
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    (() => {
+      const screens = {
+        home: document.getElementById('screen-home'),
+        menu: document.getElementById('screen-menu'),
+        favorites: document.getElementById('screen-favorites'),
+        history: document.getElementById('screen-history'),
+        settings: document.getElementById('screen-settings'),
+        help: document.getElementById('screen-help'),
+        'sd-manage': document.getElementById('screen-sd-manage')
+      };
+
+      const btnLsk = document.getElementById('btn-lsk');
+      const btnRsk = document.getElementById('btn-rsk');
+      const btnGo = document.getElementById('btn-go');
+      const searchInput = document.getElementById('search-input');
+      const favoritesList = document.getElementById('favorites-list');
+      const historyList = document.getElementById('history-list');
+      const speedDialEl = document.getElementById('speed-dial');
+      const sdManageList = document.getElementById('sd-manage-list');
+      const btnManageSd = document.getElementById('btn-manage-sd');
+      const favTitleInput = document.getElementById('fav-title');
+      const favUrlInput = document.getElementById('fav-url');
+      const btnSaveFav = document.getElementById('btn-save-fav');
+      const btnClearHistory = document.getElementById('btn-clear-history');
+      const searchEngineSelect = document.getElementById('search-engine');
+      const fontSizeSelect = document.getElementById('font-size-select');
+      const themeSelect = document.getElementById('theme-select');
+      const statusEl = document.getElementById('status');
+      const datetimeEl = document.getElementById('datetime');
+      const menuItems = Array.from(document.querySelectorAll('.menu-item'));
+
+      let favorites = [];
+      let historyEntries = [];
+      let speedDial = [
+        { title: 'Vikipedi', url: 'https://m.wikipedia.org' },
+        { title: 'Ekşi', url: 'https://eksisozluk.com' },
+        { title: 'YouTube', url: 'https://m.youtube.com' },
+        { title: 'DDG Lite', url: 'https://lite.duckduckgo.com/lite/' }
+      ];
+
+      let settings = {
+        searchEngine: 'https://www.bing.com/search?q=',
+        theme: 'theme-day',
+        fontSize: '8px'
+      };
+
+      const navStack = [];
+
+      function saveFavorites() { try { localStorage.setItem('mb_fav_v5', JSON.stringify(favorites)); } catch (e) {} }
+      function saveHistory() { try { localStorage.setItem('mb_hist_v5', JSON.stringify(historyEntries)); } catch (e) {} }
+      function saveSpeedDial() { try { localStorage.setItem('mb_sd_v5', JSON.stringify(speedDial)); } catch (e) {} }
+      function saveSettings() { try { localStorage.setItem('mb_set_v5', JSON.stringify(settings)); } catch (e) {} }
+
+      function loadAll() {
+        try { favorites = JSON.parse(localStorage.getItem('mb_fav_v5') || '[]'); } catch (e) {}
+        try { historyEntries = JSON.parse(localStorage.getItem('mb_hist_v5') || '[]'); } catch (e) {}
+        try {
+          const sd = JSON.parse(localStorage.getItem('mb_sd_v5'));
+          if (sd && Array.isArray(sd)) speedDial = sd;
+        } catch (e) {}
+        try { Object.assign(settings, JSON.parse(localStorage.getItem('mb_set_v5') || '{}')); } catch (e) {}
+      }
+
+      window.openUrl = function(url) {
+        window.open(url, '_blank');
+        addHistory(url, url);
+      };
+
+      function renderSpeedDial() {
+        speedDialEl.innerHTML = '';
+        speedDial.slice(0, 6).forEach((item) => {
+          const div = document.createElement('div');
+          div.className = 'sd-item';
+          div.innerText = item.title;
+          div.onclick = () => openUrl(item.url);
+          speedDialEl.appendChild(div);
+        });
+      }
+
+      function renderSdManage() {
+        sdManageList.innerHTML = '';
+        if (!speedDial.length) {
+          sdManageList.innerHTML = '<li style="font-size:7px; color:var(--muted);">Kayıtlı bağlantı yok.</li>';
+          return;
+        }
+        speedDial.forEach((item, idx) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <div><strong>${item.title}</strong></div>
+            <div class="list-btns">
+              <button class="btn del-btn" style="background:var(--muted);">Kaldır</button>
+            </div>
+          `;
+          li.querySelector('.del-btn').onclick = () => {
+            speedDial.splice(idx, 1);
+            saveSpeedDial();
+            renderSpeedDial();
+            renderSdManage();
+          };
+          sdManageList.appendChild(li);
+        });
+      }
+
+      function renderFavorites() {
+        favoritesList.innerHTML = '';
+        if (!favorites.length) {
+          favoritesList.innerHTML = '<li style="font-size:7px; color:var(--muted);">Favori yok.</li>';
+          return;
+        }
+        favorites.slice().reverse().forEach((f) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <a href="${f.url}" target="_blank">${f.title || f.url}</a>
+            <div class="list-btns">
+              <button class="btn open-btn">Aç</button>
+              <button class="btn sd-add-btn">Hızlıya Ekle</button>
+              <button class="btn del-btn" style="background:var(--muted);">Sil</button>
+            </div>
+          `;
+          li.querySelector('.open-btn').onclick = () => openUrl(f.url);
+          li.querySelector('.sd-add-btn').onclick = () => {
+            speedDial.unshift({ title: f.title.substring(0, 10), url: f.url });
+            if (speedDial.length > 6) speedDial.pop();
+            saveSpeedDial();
+            renderSpeedDial();
+            alert('Hızlı Erişime Eklendi!');
+          };
+          li.querySelector('.del-btn').onclick = () => {
+            favorites.splice(favorites.indexOf(f), 1);
+            saveFavorites();
+            renderFavorites();
+          };
+          favoritesList.appendChild(li);
+        });
+      }
+
+      function renderHistory() {
+        historyList.innerHTML = '';
+        if (!historyEntries.length) {
+          historyList.innerHTML = '<li style="font-size:7px; color:var(--muted);">Geçmiş yok.</li>';
+          return;
+        }
+        historyEntries.slice().reverse().forEach((h) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <a href="${h.url}" target="_blank">${h.title || h.url}</a>
+            <div class="list-btns">
+              <button class="btn open-btn">Aç</button>
+              <button class="btn del-btn" style="background:var(--muted);">Sil</button>
+            </div>
+          `;
+          li.querySelector('.open-btn').onclick = () => openUrl(h.url);
+          li.querySelector('.del-btn').onclick = () => {
+            historyEntries.splice(historyEntries.indexOf(h), 1);
+            saveHistory();
+            renderHistory();
+          };
+          historyList.appendChild(li);
+        });
+      }
+
+      function addHistory(title, url) {
+        historyEntries.push({ title: title || url, url, time: Date.now() });
+        if (historyEntries.length > 50) historyEntries.shift();
+        saveHistory();
+        renderHistory();
+      }
+
+      function renderScreen(name) {
+        if (!screens[name]) name = 'home';
+        Object.values(screens).forEach((s) => s.classList.add('hidden'));
+        screens[name].classList.remove('hidden');
+      }
+
+      function showScreen(name) {
+        const cur = document.querySelector('.screen:not(.hidden)')?.getAttribute('data-screen');
+        if (cur !== name) navStack.push(cur || 'home');
+        renderScreen(name);
+      }
+
+      function goBack() {
+        if (!navStack.length) { renderScreen('home'); return; }
+        renderScreen(navStack.pop());
+      }
+
+      function performSearch(query) {
+        if (!query || !query.trim()) return;
+        let url = query.trim();
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          if (url.includes('.') && !url.includes(' ')) url = 'https://' + url;
+          else url = (settings.searchEngine || 'https://www.bing.com/search?q=') + encodeURIComponent(url);
+        }
+        openUrl(url);
+      }
+
+      function applyTheme() {
+        document.documentElement.className = settings.theme || 'theme-day';
+        document.documentElement.style.setProperty('--font-size', settings.fontSize || '8px');
+      }
+
+      function updateDateTime() {
+        const now = new Date();
+        datetimeEl.textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      }
+
+      document.addEventListener('keydown', (e) => {
+        const isInput = ['INPUT', 'SELECT'].includes(e.target.tagName);
+        if (['Escape', 'SoftLeft', 'F1'].includes(e.key) && !isInput) { e.preventDefault(); showScreen('menu'); }
+        if (['SoftRight', 'F2', 'Backspace', '0'].includes(e.key) && !isInput) { e.preventDefault(); goBack(); }
+        if (document.querySelector('.screen:not(.hidden)')?.id === 'screen-menu' && /^[1-4]$/.test(e.key)) {
+          menuItems[parseInt(e.key) - 1]?.click();
+        }
+      });
+
+      function init() {
+        loadAll();
+        if (settings.searchEngine) searchEngineSelect.value = settings.searchEngine;
+        if (settings.fontSize) fontSizeSelect.value = settings.fontSize;
+        if (settings.theme) themeSelect.value = settings.theme;
+        
+        applyTheme();
+        renderSpeedDial();
+        renderFavorites();
+        renderHistory();
+
+        btnLsk.onclick = () => showScreen('menu');
+        btnRsk.onclick = goBack;
+        btnGo.onclick = () => performSearch(searchInput.value);
+        searchInput.onkeydown = (e) => { if (e.key === 'Enter') performSearch(searchInput.value); };
+
+        btnManageSd.onclick = () => {
+          renderSdManage();
+          showScreen('sd-manage');
+        };
+
+        btnSaveFav.onclick = () => {
+          if (favTitleInput.value && favUrlInput.value) {
+            favorites.push({ title: favTitleInput.value, url: favUrlInput.value });
+            saveFavorites();
+            renderFavorites();
+            favTitleInput.value = ''; favUrlInput.value = '';
+          }
+        };
+
+        btnClearHistory.onclick = () => { historyEntries = []; saveHistory(); renderHistory(); };
+        searchEngineSelect.onchange = (e) => { settings.searchEngine = e.target.value; saveSettings(); };
+        fontSizeSelect.onchange = (e) => { settings.fontSize = e.target.value; saveSettings(); applyTheme(); };
+        themeSelect.onchange = (e) => { settings.theme = e.target.value; saveSettings(); applyTheme(); };
+
+        menuItems.forEach(i => i.onclick = () => showScreen(i.getAttribute('data-target')));
+
+        renderScreen('home');
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+      }
+
+      init();
+    })();
+  </script>
 </body>
 </html>
